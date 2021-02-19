@@ -183,7 +183,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user!=null){
-            Intent intent = new Intent(this, com.refood.refood.ProfileActivity.class);
+            Intent intent = new Intent(this, com.refood.refood.HomeActivity.class);
             startActivity(intent);
         }
     }

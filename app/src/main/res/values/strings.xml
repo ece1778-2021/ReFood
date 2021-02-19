@@ -13,4 +13,13 @@
     <string name="set_display_picture">Set Display Picture</string>
     <string name="profile_appbar_text" />
     <string name="logout_text">LOG OUT</string>
+    <string name="homepage_appbar_text" />
+    <string name="re_food">re:Food</string>
+    <string name="welcome_back">Welcome back</string>
+    <string name="day_streak_template">%1$d day streak!</string>
+    <string name="coins_template">\t $ %1$d \t \t</string>
+    <string name="food_profile_text">Food Profile</string>
+    <string name="zem_garden_text">Zem\nGarden</string>
+    <string name="exercise_text">No-Go\nTraining</string>
+    <string name="stats_text">Stats</string>
 </resources>

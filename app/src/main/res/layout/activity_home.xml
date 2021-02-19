@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeActivity">
+
+    <TextView
+        android:id="@+id/logo_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/re_food"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@+id/logo_guideline_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/logo_guideline_top" />
+
+    <ImageView
+        android:id="@+id/logo_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/zem1"
+        app:layout_constraintBottom_toTopOf="@+id/logo_guideline_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/logo_text"
+        app:layout_constraintTop_toTopOf="@+id/logo_guideline_top" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/logo_guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/logo_guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <TextView
+        android:id="@+id/welcome_back_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome_back"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo_guideline_bottom" />
+
+    <TextView
+        android:id="@+id/day_streak_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/day_streak_template"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcome_back_text" />
+
+    <ImageView
+        android:id="@+id/day_streak_logo_left"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/star"
+        app:layout_constraintBottom_toBottomOf="@+id/day_streak_text"
+        app:layout_constraintEnd_toStartOf="@+id/day_streak_text"
+        app:layout_constraintTop_toTopOf="@+id/day_streak_text" />
+
+    <ImageView
+        android:id="@+id/day_streak_logo_right"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/star"
+        app:layout_constraintBottom_toBottomOf="@+id/day_streak_text"
+        app:layout_constraintStart_toEndOf="@+id/day_streak_text"
+        app:layout_constraintTop_toTopOf="@+id/day_streak_text" />
+
+    <TextView
+        android:id="@+id/coin_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_top_margin"
+        android:background="@color/black"
+        android:text="@string/coins_template"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/day_streak_text" />
+
+    <ImageView
+        android:id="@+id/coin_image"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/coin"
+        app:layout_constraintBottom_toBottomOf="@+id/coin_text"
+        app:layout_constraintStart_toEndOf="@+id/coin_text"
+        app:layout_constraintTop_toTopOf="@+id/coin_text" />
+
+    <Button
+        android:id="@+id/food_profile_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_top_margin"
+        android:backgroundTint="@color/common_google_signin_btn_text_light"
+        android:onClick="goFoodProfile"
+        android:text="@string/food_profile_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coin_text" />
+
+    <ImageView
+        android:id="@+id/stats_button"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/down"
+        android:onClick="goStats"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/zem_garden_button"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/left"
+        android:onClick="goZemGarden"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/logo_guideline_bottom" />
+
+    <ImageView
+        android:id="@+id/exercise_button"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/left"
+        android:onClick="goExercise"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/logo_guideline_bottom"
+        android:rotation="180"/>
+
+    <TextView
+        android:id="@+id/go_zemgarden_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/zem_garden_text"
+        android:textSize="18sp"
+        android:onClick="goZemGarden"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/zem_garden_button"
+        app:layout_constraintTop_toTopOf="@+id/logo_guideline_bottom" />
+
+    <TextView
+        android:id="@+id/go_exercise_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/exercise_text"
+        android:textSize="18sp"
+        android:onClick="goExercise"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/exercise_button"
+        app:layout_constraintTop_toTopOf="@+id/logo_guideline_bottom" />
+
+    <TextView
+        android:id="@+id/go_stats_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stats_text"
+        android:textSize="18sp"
+        android:onClick="goStats"
+        app:layout_constraintBottom_toTopOf="@+id/stats_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

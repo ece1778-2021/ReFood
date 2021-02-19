@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser currentUser) {
         if (currentUser!=null) {
-            Intent intent = new Intent(this, com.refood.refood.ProfileActivity.class);
+            Intent intent = new Intent(this, com.refood.refood.HomeActivity.class);
             startActivity(intent);
         }
     }
