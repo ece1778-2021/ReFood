@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/editTextLoginEmailAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_top_margin"
+        android:layout_marginStart="@dimen/default_side_margin"
+        android:layout_marginLeft="@dimen/default_side_margin"
+        android:layout_marginEnd="@dimen/default_side_margin"
+        android:layout_marginRight="@dimen/default_side_margin"
+        android:ems="10"
+        android:hint="@string/email_placeholder"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextLoginPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_top_margin"
+        android:layout_marginStart="@dimen/default_side_margin"
+        android:layout_marginLeft="@dimen/default_side_margin"
+        android:layout_marginEnd="@dimen/default_side_margin"
+        android:layout_marginRight="@dimen/default_side_margin"
+        android:ems="10"
+        android:hint="@string/password_placeholder"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLoginEmailAddress" />
+
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_side_margin"
+        android:layout_marginLeft="@dimen/default_side_margin"
+        android:layout_marginTop="@dimen/default_top_margin"
+        android:layout_marginEnd="@dimen/default_side_margin"
+        android:layout_marginRight="@dimen/default_side_margin"
+        android:onClick="DoLogin"
+        android:text="@string/login_button_text"
+        app:backgroundTint="@color/common_google_signin_btn_text_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLoginPassword" />
+
+    <Button
+        android:id="@+id/register_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_side_margin"
+        android:layout_marginLeft="@dimen/default_side_margin"
+        android:layout_marginTop="@dimen/default_top_margin"
+        android:layout_marginEnd="@dimen/default_side_margin"
+        android:layout_marginRight="@dimen/default_side_margin"
+        android:onClick="LaunchRegister"
+        android:text="@string/register_button_text"
+        app:backgroundTint="@color/common_google_signin_btn_text_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/separator_text" />
+
+    <TextView
+        android:id="@+id/separator_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_top_margin"
+        android:layout_marginStart="@dimen/default_side_margin"
+        android:layout_marginLeft="@dimen/default_side_margin"
+        android:layout_marginEnd="@dimen/default_side_margin"
+        android:layout_marginRight="@dimen/default_side_margin"
+        android:text="@string/separator_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_button" />
+
+    <View
+        android:id="@+id/left_divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/default_side_margin"
+        android:layout_marginLeft="@dimen/default_side_margin"
+        android:layout_marginEnd="@dimen/default_side_margin"
+        android:layout_marginRight="@dimen/default_side_margin"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/register_button"
+        app:layout_constraintEnd_toStartOf="@+id/separator_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_button" />
+
+    <View
+        android:id="@+id/right_divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/default_side_margin"
+        android:layout_marginLeft="@dimen/default_side_margin"
+        android:layout_marginEnd="@dimen/default_side_margin"
+        android:layout_marginRight="@dimen/default_side_margin"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/register_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/separator_text"
+        app:layout_constraintTop_toBottomOf="@+id/login_button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

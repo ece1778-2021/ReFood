@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "662155966725",
+    "project_id": "refood-93e75",
+    "storage_bucket": "refood-93e75.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662155966725:android:9973ff415b7111c88d9f6c",
+        "android_client_info": {
+          "package_name": "com.refood.refood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "662155966725-3euc89fhegrq79tran73lde9b0rfck73.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBzJH98XnPdFSF7j9Xub86Fe1KKldPeOo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "662155966725-3euc89fhegrq79tran73lde9b0rfck73.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

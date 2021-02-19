@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_side_margin">16dp</dimen>
+    <dimen name="default_top_margin">20dp</dimen>
+    <dimen name="default_bottom_margin">16dp</dimen>
+    <dimen name="default_image_size">128dp</dimen>
+</resources>

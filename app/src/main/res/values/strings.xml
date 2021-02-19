@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Re:Food</string>
+    <string name="email_placeholder">Email</string>
+    <string name="password_placeholder">Password</string>
+    <string name="login_button_text">LOG IN</string>
+    <string name="register_button_text">SIGN UP</string>
+    <string name="separator_text">OR</string>
+    <string name="login_appbar_text">Login to Re:Food</string>
+    <string name="register_appbar_text">Register</string>
+    <string name="bio_placeholder">A shot bio</string>
+    <string name="username_placeholder">Username</string>
+    <string name="confirm_password_placeholder">Confirm Password</string>
+    <string name="set_display_picture">Set Display Picture</string>
+    <string name="profile_appbar_text" />
+    <string name="logout_text">LOG OUT</string>
+</resources>
