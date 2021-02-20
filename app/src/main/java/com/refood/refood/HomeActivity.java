@@ -20,7 +20,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // TODO: get the actual number of coins
         int numCoin = 132;
-        ((TextView)findViewById(R.id.coin_text)).setText(getString(R.string.coins_template, numCoin));
+        ((TextView)findViewById(R.id.home_coin_text)).setText(getString(R.string.coins_template, numCoin));
     }
 
     public void goFoodProfile(View view) {

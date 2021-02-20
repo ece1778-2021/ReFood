@@ -22,4 +22,5 @@
     <string name="zem_garden_text">Zem\nGarden</string>
     <string name="exercise_text">No-Go\nTraining</string>
     <string name="stats_text">Stats</string>
+    <string name="start_exercise_text">Start!</string>
 </resources>
