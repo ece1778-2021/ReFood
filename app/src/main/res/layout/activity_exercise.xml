@@ -42,7 +42,18 @@
         android:id="@+id/cue_view"
         android:layout_width="128dp"
         android:layout_height="128dp"
+        android:cropToPadding="true"
+        android:onClick="countClick"
+        android:scaleType="centerCrop"
         android:visibility="invisible"
-        app:srcCompat="@drawable/burger"
-        android:scaleType="centerCrop"/>
+        app:srcCompat="@drawable/burger" />
+
+    <TextView
+        android:id="@+id/feedback_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/exercise_coin_text"
+        app:layout_constraintStart_toStartOf="@+id/exercise_coin_text"
+        app:layout_constraintTop_toBottomOf="@+id/exercise_coin_text" />
 </androidx.constraintlayout.widget.ConstraintLayout>

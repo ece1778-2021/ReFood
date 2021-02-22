@@ -23,4 +23,8 @@
     <string name="exercise_text">No-Go\nTraining</string>
     <string name="stats_text">Stats</string>
     <string name="start_exercise_text">Start!</string>
+    <string name="round_transition_text">Next Round!</string>
+    <string name="increment_feedback_text">+ 1</string>
+    <string name="decrement_feedback_text">- 1</string>
+    <string name="game_end_text">Done!</string>
 </resources>
