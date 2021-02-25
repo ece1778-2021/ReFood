@@ -121,17 +121,7 @@ public class ProfileImageAdapter extends
 
         @Override
         public void onClick(View view) {
-            // Get the position of the item that was clicked.
-            String timestamp = mTimestamp.get(getLayoutPosition());
-            String uid = mAuth.getCurrentUser().getUid();
-            File storageDir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES), uid);
-            File timestampImage = new File(storageDir, timestamp + ".jpg");
 
-            ImageView fullscreenView = itemView.getRootView().findViewById(R.id.fullscreen_view);
-            Bitmap imageItem = BitmapFactory.decodeFile(timestampImage.getAbsolutePath());
-            fullscreenView.setImageBitmap(imageItem);
-            fullscreenView.setVisibility(View.VISIBLE);
-            itemView.getRootView().findViewById(R.id.cameraFAB).setVisibility(View.GONE);
         }
     }
 

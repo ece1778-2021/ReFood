@@ -1,5 +1,6 @@
 package com.refood.refood;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -7,12 +8,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class HomeActivity extends AppCompatActivity {
+
+    private static final int REQUEST_PROFILE_LOGOUT = 1;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        mAuth = FirebaseAuth.getInstance();
 
         // TODO: get the actual dayStreak
         int dayStreak = 5;
@@ -25,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void goFoodProfile(View view) {
         Intent intent = new Intent(this, com.refood.refood.ProfileActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_PROFILE_LOGOUT);
     }
 
     public void goExercise(View view) {
@@ -41,5 +50,14 @@ public class HomeActivity extends AppCompatActivity {
     public void goZemGarden(View view) {
         Intent intent = new Intent(this, com.refood.refood.ZemGardenActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (mAuth.getCurrentUser()==null)
+        {
+            finish();
+        }
     }
 }

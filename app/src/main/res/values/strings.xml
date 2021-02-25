@@ -27,4 +27,7 @@
     <string name="increment_feedback_text">+ 1</string>
     <string name="decrement_feedback_text">- 1</string>
     <string name="game_end_text">Done!</string>
+    <string name="next_survey">Next Survey</string>
+    <string name="notification_placeholder">Notification</string>
+    <string name="notification_timing_placeholder">Timing</string>
 </resources>

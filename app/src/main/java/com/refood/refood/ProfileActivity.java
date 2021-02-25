@@ -53,19 +53,10 @@ import java.util.Map;
 public class ProfileActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = ProfileActivity.class.getSimpleName();
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-
-    private final LinkedList<String> mTimestampList = new LinkedList<>();
 
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
     private FirebaseFirestore mDb;
-
-    private RecyclerView mRecyclerView;
-    private com.refood.refood.ProfileImageAdapter mAdapter;
-
-    private String mCurrentPhotoPath;
-    private String mCurrentTimestamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +69,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
+            ((TextView) findViewById(R.id.textProfileEmail)).setText(user.getEmail());
+
             String uid = user.getUid();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference docRef = db.collection("users").document(uid);
@@ -91,44 +84,6 @@ public class ProfileActivity extends AppCompatActivity {
                             Log.d(LOG_TAG, "DocumentSnapshot data: " + userStore);
 
                             ((TextView) findViewById(R.id.textProfileUsername)).setText((String)userStore.get("username"));
-                            ((TextView) findViewById(R.id.textProfileBio)).setText((String)userStore.get("bio"));
-
-                            File storageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), uid);
-                            if (!storageDir.exists())
-                            {
-                                storageDir.mkdirs();
-                            }
-                            File displayPicFile = new File(storageDir, "displayPic.jpg");
-                            if (!displayPicFile.exists())
-                            {
-                                try {
-                                    displayPicFile.createNewFile();
-                                }
-                                catch(IOException ex){
-                                    Log.e(LOG_TAG, "createNewFile throws exception in ProfileActivity OnCreate");
-                                }
-                                StorageReference avatarRef = mStorage.getReference().child(uid+"/displayPic.jpg");
-                                avatarRef.getFile(displayPicFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                        // Local temp file has been created
-                                        Log.d(LOG_TAG, "Display Picture successfully downloaded!");
-                                        Bitmap avatar = BitmapFactory.decodeFile(displayPicFile.getAbsolutePath());
-                                        ((ImageView) findViewById(R.id.profile_avatar)).setImageBitmap(avatar);
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                        // Handle any errors
-                                        Log.w(LOG_TAG, "Display Picture failed the download!");
-                                    }
-                                });
-                            }
-                            else
-                            {
-                                Bitmap avatar = BitmapFactory.decodeFile(displayPicFile.getAbsolutePath());
-                                ((ImageView) findViewById(R.id.profile_avatar)).setImageBitmap(avatar);
-                            }
 
                         } else {
                             Log.d(LOG_TAG, "No such document");
@@ -139,115 +94,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
 
-            // Get a handle to the RecyclerView.
-            mRecyclerView = findViewById(R.id.imageGrid);
-            // Create an adapter and supply the data to be displayed.
-            mAdapter = new com.refood.refood.ProfileImageAdapter(this, mTimestampList);
-            // Connect the adapter with the RecyclerView.
-            mRecyclerView.setAdapter(mAdapter);
-            // Give the RecyclerView a default layout manager.
-            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-
-            mDb.collection("photos").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            if (document.getData().get("uid").toString().equals(uid)) {
-                                mTimestampList.addFirst(document.getData().get("timestamp").toString());
-                            }
-                        }
-                        Collections.sort(mTimestampList, Collections.reverseOrder());
-                        mRecyclerView.getAdapter().notifyDataSetChanged();
-                    }
-                    else {
-                        Log.d(LOG_TAG, "get failed with ", task.getException());
-                    }
-                }
-            });
-
-            FloatingActionButton fab = findViewById(R.id.cameraFAB);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dispatchTakePictureIntent(view);
-                }
-            });
-
         }
-    }
-
-    public void dispatchTakePictureIntent(View view) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.refood.android.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-        }
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = timeStamp + ".jpg";
-        String uid = mAuth.getCurrentUser().getUid();
-        File storageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), uid);
-
-        File image = new File(storageDir, imageFileName);
-        image.createNewFile();
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        mCurrentTimestamp = timeStamp;
-        return image;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            // Record its timestamp to firestore and upload the image to storage
-            FirebaseUser user = mAuth.getCurrentUser();
-            String uid = user.getUid();
-            Map<String, Object> userStore = new HashMap<>();
-            userStore.put("uid", uid);
-            userStore.put("timestamp", mCurrentTimestamp);
-            mDb.collection("photos").add(userStore);
-
-            Bitmap image = RegisterActivity.downscaleBitmapFromFile(mCurrentPhotoPath, RegisterActivity.DOWNSCALE_SIZE);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] uploadData = baos.toByteArray();
-
-            StorageReference storageRef = mStorage.getReference();
-            StorageReference avatarRef = storageRef.child(uid + "/" + mCurrentTimestamp + ".jpg");
-
-            UploadTask uploadTask = avatarRef.putBytes(uploadData);
-
-            mTimestampList.addFirst(mCurrentTimestamp);
-            // Notify the adapter, that the data has changed.
-            mRecyclerView.getAdapter().notifyItemInserted(0);
-            // Scroll to the top.
-            mRecyclerView.smoothScrollToPosition(0);
-        }
-    }
-
-    public void exitFullscreen(View view) {
-        view.setVisibility(View.INVISIBLE);
-        findViewById(R.id.cameraFAB).setVisibility(View.VISIBLE);
     }
 
     // create an action bar button
