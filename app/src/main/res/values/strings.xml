@@ -30,4 +30,5 @@
     <string name="next_survey">Next Survey</string>
     <string name="notification_placeholder">Notification</string>
     <string name="notification_timing_placeholder">Timing</string>
+    <string name="time_save">Save Notification Time</string>
 </resources>

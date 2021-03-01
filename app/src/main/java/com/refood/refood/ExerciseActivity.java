@@ -1,17 +1,41 @@
 package com.refood.refood;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class ExerciseActivity extends AppCompatActivity {
+
+    private static final String LOG_TAG = ExerciseActivity.class.getSimpleName();
+
+    private FirebaseAuth mAuth;
+    private FirebaseStorage mStorage;
+    private FirebaseFirestore mDb;
 
     private static final int NUM_ROUND = 2;
     private static final int NUM_LEVEL = 1;
@@ -33,7 +57,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private int mParentHeight;
 
     private int mRound;
-    private int mCoins;
+    private long mNumCoins;
     private boolean mGoChosen;
 
     private int mNumHealthyFoodCues;
@@ -52,9 +76,13 @@ public class ExerciseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise);
 
-        // TODO: get the actual number of coins from firebase
-        mCoins = 0;
-        setCoinCounter();
+        mAuth = FirebaseAuth.getInstance();
+        mStorage = FirebaseStorage.getInstance();
+        mDb = FirebaseFirestore.getInstance();
+
+        Intent intent = getIntent();
+        mNumCoins = intent.getLongExtra("numCoins", 0);
+        setCoinDisplay();
 
         mCue = findViewById(R.id.cue_view);
         mStartButton = findViewById(R.id.start_exercise_button);
@@ -62,6 +90,34 @@ public class ExerciseActivity extends AppCompatActivity {
         mRound = 0;
         mtotalResponseTime = 0;
         mNumClicks = 0;
+    }
+
+    private void updateCoinsStorage() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        Map<String, Object> data = new HashMap<>();
+        data.put("numCoins", mNumCoins);
+
+        Intent replyIntent = new Intent();
+        replyIntent.putExtra("numCoins", mNumCoins);
+        setResult(RESULT_OK, replyIntent);
+
+        if (user != null) {
+            String uid = user.getUid();
+            mDb.collection("users").document(uid)
+                    .set(data, SetOptions.merge())
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(LOG_TAG, "Coins successfully updated in FireStore!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(LOG_TAG, "Error writing document", e);
+                        }
+                    });
+        }
     }
 
     public void startExercise(View view) {
@@ -93,7 +149,7 @@ public class ExerciseActivity extends AppCompatActivity {
             public void onFinish() {
                 if (mCue.getVisibility()==View.VISIBLE)
                 {
-                    updateCoinCounter(!mGoChosen);
+                    updateCoinsCounter(!mGoChosen);
                     mCue.setVisibility(View.INVISIBLE);
                 }
                 if (mGameProgress < ROUND_DURATION)
@@ -114,6 +170,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     mStartButton.setVisibility(View.VISIBLE);
                     if (mRound+1 > NUM_ROUND)
                     {
+                        updateCoinsStorage();
                         mStartButton.setText(R.string.game_end_text);
                         Toast.makeText(ExerciseActivity.this, "Average Response Time = " + String.valueOf(mtotalResponseTime/mNumClicks),
                                 Toast.LENGTH_SHORT).show();
@@ -184,17 +241,17 @@ public class ExerciseActivity extends AppCompatActivity {
         return (int)(Math.random() * (max-min) + min);
     }
 
-    private void updateCoinCounter(boolean increment)
+    private void updateCoinsCounter(boolean increment)
     {
         if (increment)
         {
-            mCoins++;
+            mNumCoins++;
             mFeedback.setText(R.string.increment_feedback_text);
             mFeedback.setTextColor(getColor(R.color.green));
         }
         else
         {
-            mCoins--;
+            mNumCoins--;
             mFeedback.setText(R.string.decrement_feedback_text);
             mFeedback.setTextColor(getColor(R.color.red));
         }
@@ -207,18 +264,18 @@ public class ExerciseActivity extends AppCompatActivity {
                 mFeedback.setVisibility(View.INVISIBLE);
             }
         }.start();
-        setCoinCounter();
+        setCoinDisplay();
     }
 
-    private void setCoinCounter()
+    private void setCoinDisplay()
     {
-        ((TextView)findViewById(R.id.exercise_coin_text)).setText(getString(R.string.coins_template, mCoins));
+        ((TextView)findViewById(R.id.exercise_coin_text)).setText(getString(R.string.coins_template, mNumCoins));
     }
 
     public void countClick(View view) {
         mCue.setVisibility(View.INVISIBLE);
         mtotalResponseTime += mCurrentResponseTime;
         mNumClicks++;
-        updateCoinCounter(mGoChosen);
+        updateCoinsCounter(mGoChosen);
     }
 }

@@ -122,6 +122,10 @@ public class RegisterActivity extends AppCompatActivity {
                                 Map<String, Object> userStore = new HashMap<>();
                                 userStore.put("username", username);
                                 userStore.put("bio", bio);
+                                userStore.put("numCoins", 0);
+                                userStore.put("notificationEnabled", false);
+                                userStore.put("notificationHour", 0);
+                                userStore.put("notificationMinute", 0);
                                 //userStore.put("displayPicPath", mCurrentPhotoPath);
                                 String uid = user.getUid();
                                 // Add a new document with a generated ID
