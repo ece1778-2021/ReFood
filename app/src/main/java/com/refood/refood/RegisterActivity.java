@@ -193,7 +193,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void dispatchTakePictureIntent(View view) {
+        Log.d("Profile activity", "dispatchTakePictureIntent onClick");
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Log.d("Profile activity", "takePictureIntent created");
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
@@ -236,6 +238,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private File createImageFile() throws IOException {
+        Log.d("Profile activity", "createImageFile called");
         // Create an image file name
         String imageFileName = "displayPic.jpg";
 

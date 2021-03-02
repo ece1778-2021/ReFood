@@ -7,11 +7,16 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -24,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -51,11 +57,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class ProfileActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
@@ -68,6 +76,7 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
     private TimePicker mTimePicker;
     private TextView mNotificationTime;
     private Switch mSwitch;
+    private boolean isChecked;
 
     private long mHour;
     private long mMinute;
@@ -86,6 +95,7 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
         mSwitch = findViewById(R.id.notification_switch);
 
         Context context = this;
+        createNotificationChannel();
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
@@ -107,6 +117,7 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
                             boolean notificationEnabled = (boolean)userStore.get("notificationEnabled");
                             mSwitch.setChecked(notificationEnabled);
                             mSwitch.setOnCheckedChangeListener((ProfileActivity)context);
+                            isChecked = notificationEnabled;
 
                             mHour = (long)userStore.get("notificationHour");
                             mMinute = (long)userStore.get("notificationMinute");
@@ -150,6 +161,9 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
     public void setTime(View view) {
         mHour = mTimePicker.getHour();
         mMinute = mTimePicker.getMinute();
+        if (isChecked){
+            setAlarm(true, mHour, mMinute);
+        }
 
         FirebaseUser user = mAuth.getCurrentUser();
         Map<String, Object> data = new HashMap<>();
@@ -196,6 +210,11 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
     {
+        this.isChecked = isChecked;
+        if (isChecked){
+            setAlarm(isChecked, mHour, mMinute);
+        }
+
         FirebaseUser user = mAuth.getCurrentUser();
         Map<String, Object> data = new HashMap<>();
         data.put("notificationEnabled", isChecked);
@@ -215,6 +234,38 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
                             Log.w(LOG_TAG, "Error writing document", e);
                         }
                     });
+        }
+    }
+
+    private void setAlarm(boolean isChecked, long hour, long minute){
+        if (!isChecked){ return; }
+        Toast.makeText(this, "Alarm set at "+mHour+':'+mMinute, Toast.LENGTH_LONG).show();
+
+        AlarmManager alarmMgr;
+        PendingIntent alarmIntent;
+        alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), ReminderBroadcast.class);
+        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, (int) hour);
+        calendar.set(Calendar.MINUTE, (int) minute);
+        calendar.set(Calendar.SECOND, 0);
+
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, alarmIntent);
+    }
+
+    private void createNotificationChannel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "alarmChannel";
+            String description = "alarm channel";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("alarmNotify", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 }
