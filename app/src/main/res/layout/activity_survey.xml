@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SurveyActivity">
+
+    <TextView
+        android:id="@+id/survey_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/survey_description"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/survey_title">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/survey_q1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_top_margin"
+                android:gravity="center"
+                android:text="@string/survey_q1_question"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RadioGroup
+                android:id="@+id/radio_q1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_top_margin"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/survey_q1">
+
+                <RadioButton
+                    android:id="@+id/q1_a"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/strongly_disagree" />
+
+                <RadioButton
+                    android:id="@+id/q1_b"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/disagree" />
+
+                <RadioButton
+                    android:id="@+id/q1_c"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/neutral" />
+
+                <RadioButton
+                    android:id="@+id/q1_d"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/agree" />
+
+                <RadioButton
+                    android:id="@+id/q1_e"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/strongly_agree" />
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/survey_q2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_top_margin"
+                android:gravity="center"
+                android:text="@string/survey_q2_question"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radio_q1" />
+
+            <RadioGroup
+                android:id="@+id/radio_q2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_top_margin"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/survey_q2">
+
+                <RadioButton
+                    android:id="@+id/q2_a"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/strongly_disagree" />
+
+                <RadioButton
+                    android:id="@+id/q2_b"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/disagree" />
+
+                <RadioButton
+                    android:id="@+id/q2_c"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/neutral" />
+
+                <RadioButton
+                    android:id="@+id/q2_d"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/agree" />
+
+                <RadioButton
+                    android:id="@+id/q2_e"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/strongly_agree" />
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/survey_q3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_top_margin"
+                android:gravity="center"
+                android:text="@string/survey_q3_question"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radio_q2" />
+
+            <RadioGroup
+                android:id="@+id/radio_q3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_top_margin"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/survey_q3">
+
+                <RadioButton
+                    android:id="@+id/q3_a"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/strongly_disagree" />
+
+                <RadioButton
+                    android:id="@+id/q3_b"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/disagree" />
+
+                <RadioButton
+                    android:id="@+id/q3_c"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/neutral" />
+
+                <RadioButton
+                    android:id="@+id/q3_d"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/agree" />
+
+                <RadioButton
+                    android:id="@+id/q3_e"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/strongly_agree" />
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/survey_q4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_top_margin"
+                android:gravity="center"
+                android:text="@string/survey_q4_question"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radio_q3" />
+
+            <RadioGroup
+                android:id="@+id/radio_q4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_top_margin"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/survey_q4">
+
+                <RadioButton
+                    android:id="@+id/q4_a"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/strongly_disagree" />
+
+                <RadioButton
+                    android:id="@+id/q4_b"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/disagree" />
+
+                <RadioButton
+                    android:id="@+id/q4_c"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/neutral" />
+
+                <RadioButton
+                    android:id="@+id/q4_d"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/agree" />
+
+                <RadioButton
+                    android:id="@+id/q4_e"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@android:drawable/btn_radio"
+                    android:gravity="center"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/strongly_agree" />
+
+            </RadioGroup>
+
+
+            <Button
+                android:id="@+id/finishSurvey_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_top_margin"
+                android:layout_marginEnd="@dimen/default_bottom_margin"
+                android:onClick="saveSurveyResults"
+                android:text="@string/finish_survey_text"
+                app:backgroundTint="@color/common_google_signin_btn_text_light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radio_q4" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

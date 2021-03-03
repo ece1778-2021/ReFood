@@ -18,7 +18,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ReFood">
-        <activity android:name=".StatsActivity"
+        <activity
+            android:name=".SurveyActivity"
+            android:label="@string/survey_title_text">
+        </activity>
+        <activity
+            android:name=".BiometricsActivity"
+            android:label="@string/survey_title_text">
+        </activity>
+        <activity
+            android:name=".StatsActivity"
             android:label="@string/stats_text"
             android:parentActivityName=".HomeActivity">
             <meta-data
@@ -53,9 +62,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.refood.refood.HomeActivity" />
         </activity>
-        <receiver android:name=".ReminderBroadcast"  android:exported="true">
+
+        <receiver
+            android:name=".ReminderBroadcast"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
             </intent-filter>
         </receiver>
@@ -85,7 +97,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

@@ -31,4 +31,32 @@
     <string name="notification_placeholder">Notification</string>
     <string name="notification_timing_placeholder">Timing</string>
     <string name="time_save">Save Notification Time</string>
+    <string name="biometrics_optional_description">The following questions are OPTIONAL</string>
+    <string name="title_activity_survey">SurveyActivity</string>
+    <string name="tab_text_1">Biometrics</string>
+    <string name="tab_text_2">Questionnaire</string>
+    <string name="refood_survey_text">reFood Survey</string>
+    <string name="sex">Select Sex</string>
+    <string name="age_placeholder">Age</string>
+    <string name="sex_placeholder">Sex</string>
+    <string name="weight_placeholder">Weight (kg)</string>
+    <string name="next_text">Next</string>
+    <string name="survey_title_text">re:Food Survey</string>
+    <string name="survey_description">In the past week...</string>
+    <string name="survey_q1_question">I felt in control over my eating</string>
+    <string name="strongly_disagree">Strongly Disagree</string>
+    <string name="disagree">Disagree</string>
+    <string name="neutral">Neutral</string>
+    <string name="agree">Agree</string>
+    <string name="strongly_agree">Strongly Agree</string>
+    <string name="survey_q2_question">I have avoided eating when not-hungry</string>
+    <string name="survey_q3_question">I couldn\'t resist my favorite foods</string>
+    <string name="survey_q4_question">I snacked quite a lot</string>
+    <string name="finish_survey_text">Finish</string>
+    <string-array name="sex_list">
+        <item>Prefer not to say</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    />
 </resources>

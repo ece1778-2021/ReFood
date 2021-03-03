@@ -1,6 +1,7 @@
 package com.refood.refood;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -43,21 +44,17 @@ import java.util.Date;
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = RegisterActivity.class.getSimpleName();
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    static final int DOWNSCALE_SIZE = 1024;
+    private static final int REQUEST_BIOMETRICS_SURVEY = 1;
+    private static final int REQUEST_WEEKLY_SURVEY = 2;
 
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
     private FirebaseFirestore mDb;
 
-    private ImageView mAvatarView;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EditText mConfirmPasswordEditText;
     private EditText mUsernameEditText;
-    private EditText mBioEditText;
-
-    private String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,24 +65,10 @@ public class RegisterActivity extends AppCompatActivity {
         mStorage = FirebaseStorage.getInstance();
         mDb = FirebaseFirestore.getInstance();
 
-        mAvatarView = findViewById(R.id.register_avatar);
         mEmailEditText = findViewById(R.id.editTextRegisterEmailAddress);
         mPasswordEditText = findViewById(R.id.editTextRegisterPassword);
         mConfirmPasswordEditText = findViewById(R.id.editTextRegisterConfirmPassword);
         mUsernameEditText = findViewById(R.id.editTextRegisterUsername);
-        mBioEditText = findViewById(R.id.editTextRegisterShortBio);
-
-        if (savedInstanceState != null)
-        {
-            mCurrentPhotoPath = savedInstanceState.getString("currentPhotoPath");
-            Bitmap avatar = BitmapFactory.decodeFile(mCurrentPhotoPath);
-            mAvatarView.setImageBitmap(avatar);
-        }
-        else
-        {
-            mCurrentPhotoPath = null;
-        }
-
     }
 
     public void DoRegister(View view) {
@@ -93,7 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
         String password = mPasswordEditText.getText().toString();
         String confirmPassword = mConfirmPasswordEditText.getText().toString();
         String username = mUsernameEditText.getText().toString();
-        String bio = mBioEditText.getText().toString();
+
         if (!password.equals(confirmPassword))
         {
             Toast.makeText(RegisterActivity.this, "Confirm password mismatches",
@@ -101,10 +84,9 @@ public class RegisterActivity extends AppCompatActivity {
             updateUI(null);
         }
         else if (com.refood.refood.MainActivity.isEmptyString(email) || com.refood.refood.MainActivity.isEmptyString(password)
-                || com.refood.refood.MainActivity.isEmptyString(username) || com.refood.refood.MainActivity.isEmptyString(bio)
-                || com.refood.refood.MainActivity.isEmptyString(mCurrentPhotoPath))
+                || com.refood.refood.MainActivity.isEmptyString(username))
         {
-            Toast.makeText(RegisterActivity.this, "Fields and/or the picture cannot be empty",
+            Toast.makeText(RegisterActivity.this, "Fields cannot be empty",
                     Toast.LENGTH_SHORT).show();
             updateUI(null);
         }
@@ -121,12 +103,11 @@ public class RegisterActivity extends AppCompatActivity {
                                 // Create a new user with a first and last name
                                 Map<String, Object> userStore = new HashMap<>();
                                 userStore.put("username", username);
-                                userStore.put("bio", bio);
                                 userStore.put("numCoins", 0);
                                 userStore.put("notificationEnabled", false);
                                 userStore.put("notificationHour", 0);
                                 userStore.put("notificationMinute", 0);
-                                //userStore.put("displayPicPath", mCurrentPhotoPath);
+
                                 String uid = user.getUid();
                                 // Add a new document with a generated ID
                                 mDb.collection("users").document(uid)
@@ -135,6 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 Log.d(LOG_TAG, "DocumentSnapshot successfully written!");
+                                                updateUI(user);
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
@@ -143,31 +125,6 @@ public class RegisterActivity extends AppCompatActivity {
                                                 Log.w(LOG_TAG, "Error writing document", e);
                                             }
                                         });
-                                // Upload image to storage
-                                Bitmap image = downscaleBitmapFromFile(mCurrentPhotoPath, DOWNSCALE_SIZE);
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                                byte[] data = baos.toByteArray();
-
-                                StorageReference storageRef = mStorage.getReference();
-                                StorageReference avatarRef = storageRef.child(uid+"/displayPic.jpg");
-
-                                UploadTask uploadTask = avatarRef.putBytes(data);
-                                uploadTask.addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                        // Handle unsuccessful uploads
-                                        Log.w(LOG_TAG, "Display Picture failed the upload!");
-                                    }
-                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                                        // ...
-                                        Log.d(LOG_TAG, "Display Picture successfully Uploaded!");
-                                        updateUI(user);
-                                    }
-                                });
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(LOG_TAG, "createUserWithEmail:failure", task.getException());
@@ -176,8 +133,6 @@ public class RegisterActivity extends AppCompatActivity {
                                         Toast.LENGTH_SHORT).show();
                                 updateUI(null);
                             }
-
-                            // ...
                         }
                     });
 
@@ -187,122 +142,29 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user!=null){
+            Intent intent = new Intent(this, com.refood.refood.BiometricsActivity.class);
+            startActivityForResult(intent, REQUEST_BIOMETRICS_SURVEY);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_BIOMETRICS_SURVEY)
+        {
+            Intent intent = new Intent(this, com.refood.refood.SurveyActivity.class);
+            startActivityForResult(intent, REQUEST_WEEKLY_SURVEY);
+        }
+        else if (requestCode == REQUEST_WEEKLY_SURVEY)
+        {
             Intent intent = new Intent(this, com.refood.refood.HomeActivity.class);
             startActivity(intent);
         }
     }
 
-    public void dispatchTakePictureIntent(View view) {
-        Log.d("Profile activity", "dispatchTakePictureIntent onClick");
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Log.d("Profile activity", "takePictureIntent created");
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.refood.android.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            /*if (data != null)
-            {
-                Log.d(LOG_TAG, "received non-null data from the camera");
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                mAvatarView.setImageBitmap(imageBitmap);
-            }
-            else
-            {*/
-                Log.w(LOG_TAG, "received null data from the camera, try to use current photo path");
-
-                Bitmap avatar = BitmapFactory.decodeFile(mCurrentPhotoPath);
-                mAvatarView.setImageBitmap(avatar);
-            //}
-        }
-    }
-
-    private File createImageFile() throws IOException {
-        Log.d("Profile activity", "createImageFile called");
-        // Create an image file name
-        String imageFileName = "displayPic.jpg";
-
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-        //File image = File.createTempFile(
-        //        imageFileName,  /* prefix */
-        //        ".jpg",         /* suffix */
-        //        storageDir      /* directory */
-        //);
-        File image = new File(storageDir, imageFileName);
-        image.createNewFile();
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mCurrentPhotoPath!=null)
-        {
-            outState.putString("currentPhotoPath", mCurrentPhotoPath);
-        }
     }
-
-    public static int calculateInSampleSize( BitmapFactory.Options options, int downscaleSize) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > downscaleSize || width > downscaleSize) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= downscaleSize
-                    && (halfWidth / inSampleSize) >= downscaleSize) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-    public static Bitmap downscaleBitmapFromFile(String photoPath, int downscaleSize) {
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(photoPath, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, downscaleSize);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(photoPath, options);
-    }
-
-
 
 }
