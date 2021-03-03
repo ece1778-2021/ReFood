@@ -1,6 +1,7 @@
 package com.refood.refood;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -24,6 +25,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -41,9 +43,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.core.OrderBy;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -56,6 +60,7 @@ import org.w3c.dom.Text;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
@@ -65,14 +70,20 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TimeZone;
 
+import static com.refood.refood.SurveyActivity.md5;
+
 public class ProfileActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     private static final String LOG_TAG = ProfileActivity.class.getSimpleName();
+    private static final int REQUEST_WEEKLY_SURVEY = 1;
+    private static final int SURVEY_INTERVAL = 7;
 
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
     private FirebaseFirestore mDb;
 
+    private TextView mTextNextSurvey;
+    private Button mButtonDoSurvey;
     private TimePicker mTimePicker;
     private TextView mNotificationTime;
     private Switch mSwitch;
@@ -90,6 +101,8 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
         mStorage = FirebaseStorage.getInstance();
         mDb = FirebaseFirestore.getInstance();
 
+        mTextNextSurvey = findViewById(R.id.textProfileNextSurvey);
+        mButtonDoSurvey = findViewById(R.id.buttonDoSurvey);
         mTimePicker = findViewById(R.id.notification_timepicker);
         mNotificationTime = findViewById(R.id.textNotificationTime);
         mSwitch = findViewById(R.id.notification_switch);
@@ -134,6 +147,7 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
                 }
             });
 
+            updateNextSurveyDate();
         }
     }
 
@@ -266,6 +280,79 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    public void doSurvey(View view) {
+        Intent intent = new Intent(this, com.refood.refood.SurveyActivity.class);
+        startActivityForResult(intent, REQUEST_WEEKLY_SURVEY);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_WEEKLY_SURVEY)
+        {
+            updateNextSurveyDate();
+        }
+    }
+
+    private void updateNextSurveyDate() 
+    {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null)
+        {
+            String uid = user.getUid();
+            mDb.collection("surveys")
+                    .whereEqualTo("userSerialNumber", com.refood.refood.SurveyActivity.md5(uid))
+                    .orderBy("timestamp", Query.Direction.DESCENDING)
+                    .limit(1)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d(LOG_TAG, document.getId() + " => " + document.getData());
+                                    Map<String, Object> surveyStore = document.getData();
+                                    String timestamp = (String)surveyStore.get("timestamp");
+                                    int differenceDays = getTimeDifferenceInDays(timestamp);
+                                    if (differenceDays >= SURVEY_INTERVAL)
+                                    {
+                                        showSurveyButton();
+                                    }
+                                    else
+                                    {
+                                        mTextNextSurvey.setText(getString(R.string.next_survey_placeholder, SURVEY_INTERVAL-differenceDays));
+                                        mButtonDoSurvey.setVisibility(View.INVISIBLE);
+                                    }
+                                }
+                            } else {
+                                Log.d(LOG_TAG, "Error getting documents: ", task.getException());
+                                showSurveyButton();
+                            }
+                        }
+                    });
+        }
+    }
+    
+    private void showSurveyButton()
+    {
+        mTextNextSurvey.setText("");
+        mButtonDoSurvey.setVisibility(View.VISIBLE);
+    }
+
+    public static int getTimeDifferenceInDays(String timestamp) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
+            Date current = new Date();
+            Date timestampDate = format.parse(timestamp);
+            long differenceMs = current.getTime() - timestampDate.getTime();
+            int differenceDays = (int) (differenceMs / (1000*60*60*24));
+            return differenceDays;
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "getTimeDifferenceInDays Exception: ", e);
+            return 0;
         }
     }
 }
