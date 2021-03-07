@@ -8,7 +8,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -89,6 +91,29 @@
                 app:layout_constraintGuide_percent="0.3" />
 
             <TextView
+                android:id="@+id/textProfileNextSurvey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginStart="@dimen/default_side_margin"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textProfileSurveyHeader"
+                app:layout_constraintStart_toEndOf="@+id/textProfileSurveyHeader"
+                app:layout_constraintTop_toTopOf="@+id/textProfileSurveyHeader" />
+
+            <Button
+                android:id="@+id/buttonDoSurvey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/common_google_signin_btn_text_light"
+                android:onClick="doSurvey"
+                android:text="@string/go_to_weekly_survey"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/textProfileNextSurvey"
+                app:layout_constraintStart_toEndOf="@+id/textProfileNextSurvey"
+                app:layout_constraintTop_toTopOf="@+id/textProfileNextSurvey" />
+
+            <TextView
                 android:id="@+id/textProfileSurveyHeader"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -101,6 +126,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textProfilePasswordHeader" />
 
+            <ImageView
+                android:id="@+id/imageConfig"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/default_top_margin"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toStartOf="@+id/guideline1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textProfileSurveyHeader"
+                app:srcCompat="@drawable/config" />
+
             <TextView
                 android:id="@+id/textNotificationHeader"
                 android:layout_width="0dp"
@@ -112,7 +148,7 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textProfileSurveyHeader" />
+                app:layout_constraintTop_toBottomOf="@+id/imageConfig" />
 
             <TextView
                 android:id="@+id/textNotificationTimingHeader"

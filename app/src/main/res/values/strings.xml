@@ -53,6 +53,8 @@
     <string name="survey_q3_question">I couldn\'t resist my favorite foods</string>
     <string name="survey_q4_question">I snacked quite a lot</string>
     <string name="finish_survey_text">Finish</string>
+    <string name="go_to_weekly_survey">Go To Weekly Survey</string>
+    <string name="next_survey_placeholder">%1$d days</string>
     <string-array name="sex_list">
         <item>Prefer not to say</item>
         <item>Male</item>
