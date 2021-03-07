@@ -19,13 +19,15 @@
 
     <ImageView
         android:id="@+id/logo_image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="145dp"
+        android:layout_height="73dp"
         android:src="@drawable/zem1"
-        app:layout_constraintBottom_toTopOf="@+id/logo_guideline_bottom"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/logo_text"
-        app:layout_constraintTop_toTopOf="@+id/logo_guideline_top" />
+        app:layout_constraintBottom_toTopOf="@+id/go_stats_text"
+        app:layout_constraintEnd_toStartOf="@+id/go_exercise_text"
+        app:layout_constraintHorizontal_bias="0.567"
+        app:layout_constraintStart_toEndOf="@+id/go_zemgarden_text"
+        app:layout_constraintTop_toBottomOf="@+id/food_profile_button"
+        app:layout_constraintVertical_bias="0.34" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/logo_guideline_top"
@@ -117,8 +119,8 @@
         android:id="@+id/stats_button"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/down"
         android:onClick="goStats"
+        android:src="@drawable/down"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -127,8 +129,8 @@
         android:id="@+id/zem_garden_button"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/left"
         android:onClick="goZemGarden"
+        android:src="@drawable/left"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/logo_guideline_bottom" />
@@ -137,20 +139,20 @@
         android:id="@+id/exercise_button"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/left"
         android:onClick="goExercise"
+        android:rotation="180"
+        android:src="@drawable/left"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/logo_guideline_bottom"
-        android:rotation="180"/>
+        app:layout_constraintTop_toTopOf="@+id/logo_guideline_bottom" />
 
     <TextView
         android:id="@+id/go_zemgarden_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="goZemGarden"
         android:text="@string/zem_garden_text"
         android:textSize="18sp"
-        android:onClick="goZemGarden"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/zem_garden_button"
         app:layout_constraintTop_toTopOf="@+id/logo_guideline_bottom" />
@@ -159,9 +161,9 @@
         android:id="@+id/go_exercise_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="goExercise"
         android:text="@string/exercise_text"
         android:textSize="18sp"
-        android:onClick="goExercise"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/exercise_button"
         app:layout_constraintTop_toTopOf="@+id/logo_guideline_bottom" />
@@ -170,9 +172,9 @@
         android:id="@+id/go_stats_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="goStats"
         android:text="@string/stats_text"
         android:textSize="18sp"
-        android:onClick="goStats"
         app:layout_constraintBottom_toTopOf="@+id/stats_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

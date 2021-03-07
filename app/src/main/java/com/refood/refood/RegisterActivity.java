@@ -36,6 +36,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.text.SimpleDateFormat;
@@ -104,6 +107,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 Map<String, Object> userStore = new HashMap<>();
                                 userStore.put("username", username);
                                 userStore.put("numCoins", 0);
+                                userStore.put("scoreHistory", Collections.emptyList());
+                                userStore.put("exerciseHistory", Collections.emptyList());
                                 userStore.put("notificationEnabled", false);
                                 userStore.put("notificationHour", 0);
                                 userStore.put("notificationMinute", 0);

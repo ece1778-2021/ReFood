@@ -22,11 +22,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ExerciseActivity extends AppCompatActivity {
@@ -36,10 +42,12 @@ public class ExerciseActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
     private FirebaseFirestore mDb;
+    private FirebaseUser user;
 
     private static final int NUM_ROUND = 2;
     private static final int NUM_LEVEL = 1;
-    private static final int ROUND_DURATION = 40;
+//    private static final int ROUND_DURATION = 40;
+    private static final int ROUND_DURATION = 4;
     private static final int DEFAULT_CUE_NUM = 15;
     private static final int DEFAULT_APPEAR_TIME = 1500;
     private static final int DEFAULT_ISI = 500;
@@ -58,6 +66,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
     private int mRound;
     private long mNumCoins;
+    private long mScore;
     private boolean mGoChosen;
 
     private int mNumHealthyFoodCues;
@@ -79,9 +88,11 @@ public class ExerciseActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
         mDb = FirebaseFirestore.getInstance();
+        user = mAuth.getCurrentUser();
 
         Intent intent = getIntent();
         mNumCoins = intent.getLongExtra("numCoins", 0);
+        mScore = 0;
         setCoinDisplay();
 
         mCue = findViewById(R.id.cue_view);
@@ -93,7 +104,6 @@ public class ExerciseActivity extends AppCompatActivity {
     }
 
     private void updateCoinsStorage() {
-        FirebaseUser user = mAuth.getCurrentUser();
         Map<String, Object> data = new HashMap<>();
         data.put("numCoins", mNumCoins);
 
@@ -118,6 +128,73 @@ public class ExerciseActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    private void updateScoreHistoryStorage() {
+//        if (user != null) {
+//            String uid = user.getUid();
+//            mDb.collection("users").document(uid)
+//                    .update("scoreHistory", FieldValue.arrayUnion(mScore))
+//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void aVoid) {
+//                            Log.d(LOG_TAG, "scoreHistory successfully updated in FireStore!");
+//                        }
+//                    })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            Log.w(LOG_TAG, "Error writing document", e);
+//                        }
+//                    });
+//
+//            mDb.collection("users").document(uid)
+//                    .update("exerciseHistory", FieldValue.arrayUnion(Calendar.getInstance().getTime()))
+//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void aVoid) {
+//                            Log.d(LOG_TAG, "exerciseHistory successfully updated in FireStore!");
+//                        }
+//                    })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            Log.w(LOG_TAG, "Error writing document", e);
+//                        }
+//                    });
+//        }
+        if (user == null){ return; }
+
+        final DocumentReference sfDocRef = mDb.collection("users").document(user.getUid());
+
+        mDb.runTransaction(new Transaction.Function<Void>() {
+            @Override
+            public Void apply(Transaction transaction) throws FirebaseFirestoreException {
+                DocumentSnapshot snapshot = transaction.get(sfDocRef);
+
+                List<String> exerciseHistory = (List<String>) snapshot.get("exerciseHistory");
+                Calendar c = Calendar.getInstance();
+                exerciseHistory.add(String.valueOf(c.get(Calendar.MONTH))+'/'+String.valueOf(c.get(Calendar.DAY_OF_MONTH))+'/'+c.get(Calendar.YEAR));
+                List<Long> scoreHistory = (List<Long>) snapshot.get("scoreHistory");
+                scoreHistory.add(mScore);
+
+                transaction.update(sfDocRef, "exerciseHistory", exerciseHistory);
+                transaction.update(sfDocRef, "scoreHistory", scoreHistory);
+
+                return null;
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(LOG_TAG, "Transaction success!");
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(LOG_TAG, "Transaction failure.", e);
+                    }
+                });
     }
 
     public void startExercise(View view) {
@@ -171,6 +248,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     if (mRound+1 > NUM_ROUND)
                     {
                         updateCoinsStorage();
+                        updateScoreHistoryStorage();
                         mStartButton.setText(R.string.game_end_text);
                         Toast.makeText(ExerciseActivity.this, "Average Response Time = " + String.valueOf(mtotalResponseTime/mNumClicks),
                                 Toast.LENGTH_SHORT).show();
@@ -246,12 +324,14 @@ public class ExerciseActivity extends AppCompatActivity {
         if (increment)
         {
             mNumCoins++;
+            mScore++;
             mFeedback.setText(R.string.increment_feedback_text);
             mFeedback.setTextColor(getColor(R.color.green));
         }
         else
         {
             mNumCoins--;
+            mScore--;
             mFeedback.setText(R.string.decrement_feedback_text);
             mFeedback.setTextColor(getColor(R.color.red));
         }
