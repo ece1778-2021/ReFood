@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -54,7 +55,6 @@ public class StatsActivity extends AppCompatActivity{
     LineChart mChart;
     TextView mStreak;
     TextView mDaysPlayed;
-    ArrayList<Entry> mScoreList = new ArrayList<>();
 
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
@@ -79,8 +79,8 @@ public class StatsActivity extends AppCompatActivity{
         mStreak = (TextView) findViewById(R.id.textView5);
 
         Intent intent = getIntent();
-        mDaysPlayed.setText(String.valueOf(intent.getIntExtra("streak", 0)));
-        mStreak.setText(String.valueOf(intent.getLongExtra("daysPlayed", 0)));
+        mDaysPlayed.setText(String.valueOf(intent.getLongExtra("daysPlayed", 0)));
+        mStreak.setText(String.valueOf(intent.getIntExtra("streak", 0)));
 
         populateInfo();
     }
@@ -107,7 +107,7 @@ public class StatsActivity extends AppCompatActivity{
                                 Log.d(LOG_TAG, "Timestamp data: " + date);
 //                                xLabel.add(date);
 //                                xLabel.add("Mar 24");
-                                entryList.add(new Entry(i, scoreList.get(i)));
+                                entryList.add(new Entry(i, scoreList.get(i).intValue()));
                             }
 
                             setChart(entryList);
@@ -127,8 +127,12 @@ public class StatsActivity extends AppCompatActivity{
         LineDataSet set1 = new LineDataSet(entryList, "Data Set 1");
 
         set1.setFillAlpha(110);
-        set1.setColor(Color.BLUE);
+        set1.setColor(Color.LTGRAY);
         set1.setLineWidth(3f);
+        set1.setValueTextSize(18);
+        set1.setCircleRadius(6f);
+        set1.setCircleColor(0xFFFF8800);
+        set1.setLabel("Score History");
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
@@ -136,9 +140,14 @@ public class StatsActivity extends AppCompatActivity{
         LineData data = new LineData(dataSets);
 
         mChart.setData(data);
+        mChart.invalidate();
+
+        Description desc = new Description();
+        desc.setText("");
+        mChart.setDescription(desc);
 
         XAxis xAxis = mChart.getXAxis();
-        xAxis.setAxisMinimum(0);
+        xAxis.setAxisMinimum(-0.2f);
         xAxis.setDrawLabels(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
@@ -149,11 +158,13 @@ public class StatsActivity extends AppCompatActivity{
 //                                }
 //                            });
         xAxis.setAxisLineWidth(5f);
+        xAxis.setAxisLineColor(Color.LTGRAY);
 
         YAxis yAxis = mChart.getAxisLeft();
         yAxis.setAxisMinimum(0);
         yAxis.setDrawGridLines(false);
         yAxis.setAxisLineWidth(5f);
+        yAxis.setAxisLineColor(Color.LTGRAY);
 
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setEnabled(false);

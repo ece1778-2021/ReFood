@@ -48,7 +48,8 @@ public class ExerciseActivity extends AppCompatActivity {
     private static final int NUM_LEVEL = 1;
 //    private static final int ROUND_DURATION = 40;
     private static final int ROUND_DURATION = 4;
-    private static final int DEFAULT_CUE_NUM = 15;
+//    private static final int DEFAULT_CUE_NUM = 15;
+    private static final int DEFAULT_CUE_NUM = 1;
     private static final int DEFAULT_APPEAR_TIME = 1500;
     private static final int DEFAULT_ISI = 500;
     private int mGameProgress;

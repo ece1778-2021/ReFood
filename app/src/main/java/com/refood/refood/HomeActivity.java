@@ -214,8 +214,6 @@ public class HomeActivity extends AppCompatActivity {
                             for (int i=0; i<dateList.size(); i++) {
                                 String date = dateList.get(i);
                                 Log.d(LOG_TAG, "Timestamp data: " + date);
-//                                xLabel.add(date);
-//                                xLabel.add("Mar 24");
                                 entryList.add(new Entry(i, scoreList.get(i)));
                             }
 
