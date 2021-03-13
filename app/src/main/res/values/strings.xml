@@ -24,9 +24,9 @@
     <string name="stats_text">Stats</string>
     <string name="start_exercise_text">Start!</string>
     <string name="round_transition_text">Next Round!</string>
-    <string name="increment_feedback_text">+ 1</string>
-    <string name="decrement_feedback_text">- 1</string>
-    <string name="game_end_text">Done!</string>
+    <string name="increment_feedback_text">+ %1$d</string>
+    <string name="decrement_feedback_text">- %1$d</string>
+    <string name="game_end_text">Restart!</string>
     <string name="next_survey">Next Survey</string>
     <string name="notification_placeholder">Notification</string>
     <string name="notification_timing_placeholder">Timing</string>
@@ -55,6 +55,7 @@
     <string name="finish_survey_text">Finish</string>
     <string name="go_to_weekly_survey">Go To Weekly Survey</string>
     <string name="next_survey_placeholder">%1$d days</string>
+    <string name="level_template">LEVEL %1$d</string>
     <string-array name="sex_list">
         <item>Prefer not to say</item>
         <item>Male</item>
