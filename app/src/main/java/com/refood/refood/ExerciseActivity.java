@@ -62,6 +62,9 @@ public class ExerciseActivity extends AppCompatActivity {
     private int mGameProgress;
 
     private Button mStartButton;
+    private TextView mExeInstr1;
+    private TextView mExeInstr2;
+    private ImageView mExeInstrImg;
     private ImageView mCue;
     private TextView mFeedback;
     private TextView mXpText;
@@ -130,6 +133,9 @@ public class ExerciseActivity extends AppCompatActivity {
 
         mCue = findViewById(R.id.cue_view);
         mStartButton = findViewById(R.id.start_exercise_button);
+        mExeInstr1 = findViewById(R.id.exerInstruction1);
+        mExeInstr2 = findViewById(R.id.exerInstruction2);
+        mExeInstrImg = findViewById(R.id.instruction_image);
         mFeedback = findViewById(R.id.feedback_text);
 
         mXpText = findViewById(R.id.exercise_xp_text);
@@ -262,6 +268,9 @@ public class ExerciseActivity extends AppCompatActivity {
                     break;
             }
             mStartButton.setVisibility(View.GONE);
+            mExeInstrImg.setVisibility(View.GONE);
+            mExeInstr1.setVisibility(View.GONE);
+            mExeInstr2.setVisibility(View.GONE);
             View parent = (View)mStartButton.getParent();
             mParentWidth = parent.getWidth() - mCue.getWidth();
             mParentHeight = parent.getHeight() - mCue.getHeight();
