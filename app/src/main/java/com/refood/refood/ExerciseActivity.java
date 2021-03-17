@@ -67,8 +67,25 @@ public class ExerciseActivity extends AppCompatActivity {
     private TextView mXpText;
     private ProgressBar mXpBar;
 
-    private final int[] mGoCue = {R.drawable.brocolli};
-    private final int[] mNoGoCue = {R.drawable.burger};
+    private final int[] mGoCue = {R.drawable.healthy_apple, R.drawable.healthy_asparagus,
+            R.drawable.healthy_avocado, R.drawable.healthy_banana, R.drawable.healthy_berries,
+            R.drawable.healthy_broc, R.drawable.healthy_brocolli, R.drawable.healthy_carrot,
+            R.drawable.healthy_chicken, R.drawable.healthy_egg, R.drawable.healthy_grain_bread,
+            R.drawable.healthy_grapes, R.drawable.healthy_kiwi, R.drawable.healthy_nuts,
+            R.drawable.healthy_salad, R.drawable.healthy_salad2, R.drawable.healthy_salad3,
+            R.drawable.healthy_salad4, R.drawable.healthy_salmon, R.drawable.healthy_spinach,
+            R.drawable.healthy_sprouts, R.drawable.healthy_squash, R.drawable.healthy_strawberry,
+            R.drawable.healthy_zuc};
+    private final int[] mNoGoCue = {R.drawable.unhealthy_burger, R.drawable.unhealthy_cake1,
+            R.drawable.unhealthy_cake2, R.drawable.unhealthy_candy1, R.drawable.unhealthy_candy2,
+            R.drawable.unhealthy_candy3, R.drawable.unhealthy_chickensandwich, R.drawable.unhealthy_chips,
+            R.drawable.unhealthy_choco1, R.drawable.unhealthy_choco2, R.drawable.unhealthy_choco3,
+            R.drawable.unhealthy_cookie1, R.drawable.unhealthy_cookie2, R.drawable.unhealthy_cookie3,
+            R.drawable.unhealthy_cookie4, R.drawable.unhealthy_cookie5, R.drawable.unhealthy_fishnchips,
+            R.drawable.unhealthy_friedchicken, R.drawable.unhealthy_fries, R.drawable.unhealthy_icecream1,
+            R.drawable.unhealthy_icecream2, R.drawable.unhealthy_icecream3, R.drawable.unhealthy_icecream4,
+            R.drawable.unhealthy_icecream5, R.drawable.unhealthy_nachos, R.drawable.unhealthy_pizza1,
+            R.drawable.unhealthy_pizza2, R.drawable.unhealthy_snickers, R.drawable.unhealthy_twinkie};
     private final int[] mNonFoodCue = {R.drawable.clothes};
     private final int[] mCoinCue = {R.drawable.coin};
     private final int[] mBombCue = {R.drawable.bomb};
@@ -263,7 +280,10 @@ public class ExerciseActivity extends AppCompatActivity {
             public void onFinish() {
                 if (mCue.getVisibility()==View.VISIBLE)
                 {
-                    updateCoinsCounter(!mGoChosen, mSpecialCue);
+                    if (!mSpecialCue)
+                    {
+                        updateCoinsCounter(!mGoChosen, mSpecialCue);
+                    }
                     mCue.setVisibility(View.INVISIBLE);
                 }
                 if (mGameProgress < ROUND_DURATION)

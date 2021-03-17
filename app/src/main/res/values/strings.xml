@@ -56,6 +56,9 @@
     <string name="go_to_weekly_survey">Go To Weekly Survey</string>
     <string name="next_survey_placeholder">%1$d days</string>
     <string name="level_template">LEVEL %1$d</string>
+    <string name="click_here_to_reset">Click Here To Reset</string>
+    <string name="set_notification_time">Set Notification Time</string>
+    <string name="collapse_time_picker">Collapse Time Picker</string>
     <string-array name="sex_list">
         <item>Prefer not to say</item>
         <item>Male</item>

@@ -76,6 +76,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textProfileEmailHeader" />
 
+            <Button
+                android:id="@+id/buttonDoPasswordReset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_side_margin"
+                android:backgroundTint="@color/common_google_signin_btn_text_light"
+                android:onClick="doPasswordReset"
+                android:text="@string/click_here_to_reset"
+                app:layout_constraintBottom_toBottomOf="@+id/textProfilePasswordHeader"
+                app:layout_constraintStart_toEndOf="@+id/textProfilePasswordHeader"
+                app:layout_constraintTop_toTopOf="@+id/textProfilePasswordHeader" />
+
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline1"
                 android:layout_width="wrap_content"
@@ -182,13 +194,39 @@
                 app:layout_constraintStart_toEndOf="@+id/textNotificationTime"
                 app:layout_constraintTop_toTopOf="@+id/textNotificationHeader" />
 
+            <TextView
+                android:id="@+id/textToggleTimePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_side_margin"
+                android:text="@string/set_notification_time"
+                android:textColor="@color/black"
+                android:onClick="toggleTimePicker"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textNotificationTimingHeader"
+                app:layout_constraintStart_toEndOf="@+id/textNotificationTimingHeader"
+                app:layout_constraintTop_toTopOf="@+id/textNotificationTimingHeader" />
+
+            <ImageView
+                android:id="@+id/imageToggleTimePicker"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="1:1"
+                android:onClick="toggleTimePicker"
+                app:layout_constraintStart_toEndOf="@+id/textToggleTimePicker"
+                app:layout_constraintTop_toTopOf="@+id/textToggleTimePicker"
+                app:layout_constraintBottom_toBottomOf="@+id/textToggleTimePicker"
+                app:srcCompat="@drawable/down" />
+
             <TimePicker
                 android:id="@+id/notification_timepicker"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_side_margin"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@+id/textNotificationTimingHeader"
-                app:layout_constraintTop_toTopOf="@+id/textNotificationTimingHeader" />
+                app:layout_constraintTop_toBottomOf="@+id/textToggleTimePicker" />
 
             <Button
                 android:id="@+id/buttonSaveTime"
@@ -197,6 +235,7 @@
                 android:backgroundTint="@color/common_google_signin_btn_text_light"
                 android:onClick="setTime"
                 android:text="@string/time_save"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/guideline2"
                 app:layout_constraintTop_toBottomOf="@+id/notification_timepicker" />

@@ -3,10 +3,6 @@ package com.refood.refood;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
@@ -14,13 +10,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,7 +28,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -47,30 +37,13 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.core.OrderBy;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.refood.refood.R;
-import com.refood.refood.RegisterActivity;
 
-import org.w3c.dom.Text;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.TimeZone;
-
-import static com.refood.refood.SurveyActivity.md5;
 
 public class ProfileActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
@@ -85,6 +58,9 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
     private TextView mTextNextSurvey;
     private Button mButtonDoSurvey;
     private TimePicker mTimePicker;
+    private Button mButtonSaveTime;
+    private TextView mTextToggleTimePicker;
+    private ImageView mImageToggleTimePicker;
     private TextView mNotificationTime;
     private Switch mSwitch;
     private boolean isChecked;
@@ -104,6 +80,9 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
         mTextNextSurvey = findViewById(R.id.textProfileNextSurvey);
         mButtonDoSurvey = findViewById(R.id.buttonDoSurvey);
         mTimePicker = findViewById(R.id.notification_timepicker);
+        mButtonSaveTime = findViewById(R.id.buttonSaveTime);
+        mTextToggleTimePicker = findViewById(R.id.textToggleTimePicker);
+        mImageToggleTimePicker = findViewById(R.id.imageToggleTimePicker);
         mNotificationTime = findViewById(R.id.textNotificationTime);
         mSwitch = findViewById(R.id.notification_switch);
 
@@ -353,6 +332,37 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
         } catch (Exception e) {
             Log.d(LOG_TAG, "getTimeDifferenceInDays Exception: ", e);
             return 0;
+        }
+    }
+
+    public void doPasswordReset(View view) {
+        String email = mAuth.getCurrentUser().getEmail();
+        mAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(LOG_TAG, "Email sent.");
+                            Toast.makeText(ProfileActivity.this, "Password Reset Email is sent", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    public void toggleTimePicker(View view) {
+        if (mTimePicker.getVisibility() == View.GONE)
+        {
+            mImageToggleTimePicker.setRotation(180);
+            mTextToggleTimePicker.setText(R.string.collapse_time_picker);
+            mTimePicker.setVisibility(View.VISIBLE);
+            mButtonSaveTime.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mImageToggleTimePicker.setRotation(0);
+            mTextToggleTimePicker.setText(R.string.set_notification_time);
+            mTimePicker.setVisibility(View.GONE);
+            mButtonSaveTime.setVisibility(View.GONE);
         }
     }
 }

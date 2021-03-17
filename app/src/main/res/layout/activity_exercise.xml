@@ -46,7 +46,7 @@
         android:onClick="countClick"
         android:scaleType="centerCrop"
         android:visibility="invisible"
-        app:srcCompat="@drawable/burger" />
+        app:srcCompat="@drawable/unhealthy_burger" />
 
     <TextView
         android:id="@+id/feedback_text"
