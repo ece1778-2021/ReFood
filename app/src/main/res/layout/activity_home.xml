@@ -21,13 +21,13 @@
         android:id="@+id/logo_image"
         android:layout_width="145dp"
         android:layout_height="73dp"
+        android:layout_marginTop="16dp"
         android:src="@drawable/zem1"
         app:layout_constraintBottom_toTopOf="@+id/go_stats_text"
         app:layout_constraintEnd_toStartOf="@+id/go_exercise_text"
-        app:layout_constraintHorizontal_bias="0.567"
         app:layout_constraintStart_toEndOf="@+id/go_zemgarden_text"
         app:layout_constraintTop_toBottomOf="@+id/food_profile_button"
-        app:layout_constraintVertical_bias="0.34" />
+        app:layout_constraintVertical_bias="0.3" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/logo_guideline_top"
@@ -133,7 +133,8 @@
         android:src="@drawable/left"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/logo_guideline_bottom" />
+        app:layout_constraintTop_toBottomOf="@+id/food_profile_button"
+        app:layout_constraintVertical_bias="0.3" />
 
     <ImageView
         android:id="@+id/exercise_button"
@@ -144,7 +145,8 @@
         android:src="@drawable/left"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/logo_guideline_bottom" />
+        app:layout_constraintTop_toBottomOf="@+id/food_profile_button"
+        app:layout_constraintVertical_bias="0.3" />
 
     <TextView
         android:id="@+id/go_zemgarden_text"
@@ -155,7 +157,8 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/zem_garden_button"
-        app:layout_constraintTop_toTopOf="@+id/logo_guideline_bottom" />
+        app:layout_constraintTop_toBottomOf="@+id/food_profile_button"
+        app:layout_constraintVertical_bias="0.3" />
 
     <TextView
         android:id="@+id/go_exercise_text"
@@ -166,7 +169,8 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/exercise_button"
-        app:layout_constraintTop_toTopOf="@+id/logo_guideline_bottom" />
+        app:layout_constraintTop_toBottomOf="@+id/food_profile_button"
+        app:layout_constraintVertical_bias="0.3" />
 
     <TextView
         android:id="@+id/go_stats_text"
@@ -178,4 +182,40 @@
         app:layout_constraintBottom_toTopOf="@+id/stats_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/instructionBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text='This app is designed to help you\npractice refraining from\nunhealthy foods with the\n"Go/No-Go" exercise'
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo_image" />
+
+    <Button
+        android:id="@+id/nextTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next TIp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="nextTipOnClick"
+        app:layout_constraintTop_toBottomOf="@+id/instructionBox" />
+
+    <ImageButton
+        android:id="@+id/tipButton"
+        android:layout_width="40dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toTopOf="@+id/logo_guideline_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toEndOf="@+id/logo_text"
+        app:layout_constraintTop_toTopOf="@+id/logo_guideline_top"
+        android:onClick="tipOnClick"
+        app:srcCompat="@drawable/tip_logo" />
 </androidx.constraintlayout.widget.ConstraintLayout>

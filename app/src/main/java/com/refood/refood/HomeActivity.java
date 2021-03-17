@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -17,6 +18,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,10 +61,28 @@ public class HomeActivity extends AppCompatActivity {
     private int numStreak;
     private Long daysPlayed;
 
+    private ImageView leftButton, rightButton, bottomButton, logo;
+    private TextView leftText, rightText, instruction;
+    private Button nextTip;
+
+    private int tipProgress = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        leftButton = findViewById(R.id.zem_garden_button);
+        rightButton = findViewById(R.id.exercise_button);
+        bottomButton = findViewById(R.id.stats_button);
+        logo = findViewById(R.id.logo_image);
+        leftText = findViewById(R.id.go_zemgarden_text);
+        rightText = findViewById(R.id.go_exercise_text);
+        instruction = findViewById(R.id.instructionBox);
+        nextTip = findViewById(R.id.nextTip);
+
+        instruction.setVisibility(View.GONE);
+        nextTip.setVisibility(View.GONE);
 
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
@@ -304,5 +325,66 @@ public class HomeActivity extends AppCompatActivity {
                 return -1;
             }
         }
+    }
+
+    public void tipOnClick(View view) {
+        if (tipProgress>0){return;}
+
+        tipProgress++;
+
+        changeVerticalBias(leftButton, 0.15f);
+        changeVerticalBias(rightButton, 0.15f);
+        changeVerticalBias(leftText, 0.15f);
+        changeVerticalBias(rightText, 0.15f);
+        changeVerticalBias(logo, 0.15f);
+
+        instruction.setBackgroundResource(R.drawable.orange_border_background);
+        instruction.setVisibility(View.VISIBLE);
+        nextTip.setVisibility(View.VISIBLE);
+    }
+
+    public void nextTipOnClick(View view) {
+        switch (tipProgress)
+        {
+            case 1:
+                instruction.setText("Press \"No-Go Training\" to\n exercise and earn coins");
+                rightButton.setBackgroundResource(R.drawable.orange_border_background);
+                tipProgress++;
+                break;
+            case 2:
+                instruction.setText("The exercise has 2 rounds.\nEarn XP to level up and \nincrease its difficulty");
+                tipProgress++;
+                break;
+            case 3:
+                instruction.setText("Press \"Stats\" to\nview progress");
+                rightButton.setBackgroundResource(0);
+                bottomButton.setBackgroundResource(R.drawable.orange_border_background);
+                tipProgress++;
+                break;
+            case 4:
+                instruction.setText("Press \"Zem Garden\" to\nspend coins you earn");
+                bottomButton.setBackgroundResource(0);
+                leftButton.setBackgroundResource(R.drawable.orange_border_background);
+                tipProgress++;
+                break;
+            case 5:
+                instruction.setVisibility(View.GONE);
+                nextTip.setVisibility(View.GONE);
+                leftButton.setBackgroundResource(0);
+                tipProgress = 0;
+
+                changeVerticalBias(leftButton, 0.3f);
+                changeVerticalBias(rightButton, 0.3f);
+                changeVerticalBias(leftText, 0.3f);
+                changeVerticalBias(rightText, 0.3f);
+                changeVerticalBias(logo, 0.3f);
+        }
+
+    }
+
+    private void changeVerticalBias(View view, float newBias){
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) view.getLayoutParams();
+        params.verticalBias = newBias;
+        view.setLayoutParams(params);
     }
 }
