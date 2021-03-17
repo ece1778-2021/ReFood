@@ -17,7 +17,7 @@ public class ReminderBroadcast extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d("ReminderBroadcast", "received!");
 //        Toast.makeText(context, "Received ", Toast.LENGTH_LONG).show();
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, new Intent(context, HomeActivity.class), 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, new Intent(context, MainActivity.class), 0);
 
         NotificationCompat.Builder mNotifBuilder = new NotificationCompat.Builder(context, "alarmNotify")
                 .setSmallIcon(R.drawable.zem1)

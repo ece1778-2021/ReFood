@@ -236,6 +236,7 @@ public class HomeActivity extends AppCompatActivity {
         numStreak = 0;
         Calendar firstDay = Calendar.getInstance();
         if (dateList.isEmpty()) {
+            mStreak.setText(getString(R.string.day_streak_template, numStreak));
             return;
         } else{
             numStreak=1;
@@ -263,6 +264,9 @@ public class HomeActivity extends AppCompatActivity {
                     continue;
                 } else if (compareCalendar(y1, m1, d1, y2, m2, d2)==1){
                     numStreak++;
+                    m1 = m2;
+                    d1 = d2;
+                    y1 = y2;
                     i--;
                 } else {
                     break;
