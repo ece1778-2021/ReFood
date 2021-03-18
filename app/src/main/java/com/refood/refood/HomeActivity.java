@@ -194,6 +194,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void goZemGarden(View view) {
         Intent intent = new Intent(this, com.refood.refood.ZemGardenActivity.class);
+        intent.putExtra("numCoins", mNumCoins);
         startActivity(intent);
     }
 
