@@ -54,14 +54,20 @@ public class ZemGardenActivity extends AppCompatActivity {
     }
 
     private void prepareZem(){
-        Zem zem = new Zem(20,R.drawable.healthy_apple);
+//        Zem zem = new Zem(20,R.drawable.zem1);
+//        zemList.add(zem);
+        Zem zem = new Zem(15,R.drawable.zem2);
         zemList.add(zem);
-        zem = new Zem(15,R.drawable.healthy_avocado);
+        zem = new Zem(20,R.drawable.zem3);
         zemList.add(zem);
-//        movie = new Zem("Justice League ",R.drawable.justice_league);
-//        zemList.add(movie);
-//        movie = new Zem("Thor: Ragnarok",R.drawable.thor_ragnarok);
-//        zemList.add(movie);
+        zem = new Zem(20,R.drawable.zem4);
+        zemList.add(zem);
+        zem = new Zem(30,R.drawable.zem5);
+        zemList.add(zem);
+        zem = new Zem(40,R.drawable.zem6);
+        zemList.add(zem);
+        zem = new Zem(40,R.drawable.zem7);
+        zemList.add(zem);
     }
 
 

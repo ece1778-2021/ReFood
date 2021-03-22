@@ -21,14 +21,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:layout_marginBottom="128dp"
+        android:layout_marginBottom="32dp"
         android:backgroundTint="@color/common_google_signin_btn_text_light"
         android:onClick="startExercise"
         android:text="@string/start_exercise_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/exerInstruction2" />
+        app:layout_constraintTop_toBottomOf="@+id/exerInstruction2"
+        app:layout_constraintVertical_bias="0.19999999" />
 
     <TextView
         android:id="@+id/exercise_coin_text"

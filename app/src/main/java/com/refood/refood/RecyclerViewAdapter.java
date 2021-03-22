@@ -88,11 +88,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private TextView price;
         private ImageView image;
         private Button button;
+        private CardView cardView;
         public MyViewHolder(View itemView) {
             super(itemView);
             price = itemView.findViewById(R.id.price);
             image = itemView.findViewById(R.id.image);
             button = itemView.findViewById(R.id.zemButton);
+            cardView = itemView.findViewById(R.id.cardView);
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -100,37 +102,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     Button button = (Button) v;
                     String text = (String) button.getText();
 
-                    switch (text){
-                        case "Buy":
-                            CharSequence priceString = price.getText();
-                            priceString = priceString.subSequence(1, priceString.length());
-                            int priceInt = Integer.parseInt((String) priceString);
-                            numCoins = numCoins - priceInt;
-                            textView.setText(textView.getContext().getString(R.string.coins_template, numCoins));
-                            button.setText("Use");
-                            break;
-                        case "Use":
-
-//                            Map<String, Object> data = new HashMap<>();
-//                            data.put("zem", image.getId());
-
-                            Toast.makeText(textView.getContext(), "Use called", Toast.LENGTH_SHORT).show();
-                            button.setText("In use");
-//                            documentReference.set(data, SetOptions.merge())
-//                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                    @Override
-//                                    public void onSuccess(Void aVoid) {
-//                                        Log.d(LOG_TAG, "Zem successfully updated in FireStore!");
-//                                    }
-//                                })
-//                                .addOnFailureListener(new OnFailureListener() {
-//                                    @Override
-//                                    public void onFailure(@NonNull Exception e) {
-//                                        Log.w(LOG_TAG, "Error writing document", e);
-//                                    }
-//                                });
-                            break;
-                    }
+                    CharSequence priceString = price.getText();
+                    priceString = priceString.subSequence(1, priceString.length());
+                    int priceInt = Integer.parseInt((String) priceString);
+                    numCoins = numCoins - priceInt;
+                    textView.setText(textView.getContext().getString(R.string.coins_template, numCoins));
+                    button.setVisibility(View.GONE);
+                    cardView.setCardBackgroundColor(cardView.getContext().getResources().getColor(R.color.light_grey));
                 }
                 });
         }
