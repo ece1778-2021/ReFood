@@ -1,57 +1,26 @@
 package com.refood.refood;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.firestore.Transaction;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-class Zem {
-    private int price;
-    private int image;
-    private String status;
-    public Zem(int price, int image) {
-        this.price = price;
-        this.image = image;
-        this.status = "Buy";
-    }
-    public int getPrice() {
-        return price;
-    }
-    public void setPrice(String title) {
-        this.price = price;
-    }
-    public int getImage() {
-        return image;
-    }
-    public void setImage(int image) {
-        this.image = image;
-    }
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    public String getStatus(){
-        return status;
-    }
-}
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder>{
     private List<Zem> zemList;
@@ -70,7 +39,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
     @Override
     public RecyclerViewAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_row,parent,false);
         return new MyViewHolder(view);
     }
     @Override
@@ -79,6 +48,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.price.setText("$"+zem.getPrice());
         holder.image.setBackgroundResource(zem.getImage());
         holder.button.setText(zem.getStatus());
+        holder.invisText.setText(zem.getUrl());
+        holder.invisText.setVisibility(View.INVISIBLE);
     }
     @Override
     public int getItemCount() {
@@ -86,6 +57,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView price;
+        private TextView invisText;
         private ImageView image;
         private Button button;
         private CardView cardView;
@@ -95,6 +67,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             image = itemView.findViewById(R.id.image);
             button = itemView.findViewById(R.id.zemButton);
             cardView = itemView.findViewById(R.id.cardView);
+            invisText = itemView.findViewById(R.id.invisText);
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -109,8 +82,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     textView.setText(textView.getContext().getString(R.string.coins_template, numCoins));
                     button.setVisibility(View.GONE);
                     cardView.setCardBackgroundColor(cardView.getContext().getResources().getColor(R.color.light_grey));
+
+                    String zemUrl = (String) invisText.getText();
+                    Map<String, Object> data = new HashMap<>();
+                    documentReference.update("ownedZems", FieldValue.arrayUnion(zemUrl));
                 }
-                });
+            });
         }
     }
 }
