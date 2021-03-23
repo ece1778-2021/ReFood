@@ -39,15 +39,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private DocumentReference documentReference;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private FirebaseFirestore mDb = FirebaseFirestore.getInstance();
+    private List<String> ownedList;
 
     private static final String LOG_TAG = RecyclerViewAdapter.class.getSimpleName();
 
 
-    RecyclerViewAdapter(List<Zem> zemList, long numCoins, TextView textView, DocumentReference documentReference){
+    RecyclerViewAdapter(List<Zem> zemList, long numCoins, TextView textView, DocumentReference documentReference, List<String> ownedList){
         this.zemList = zemList;
         this.numCoins = numCoins;
         this.textView = textView;
         this.documentReference = documentReference;
+        this.ownedList = ownedList;
     }
     @Override
     public RecyclerViewAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -62,6 +64,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.button.setText(zem.getStatus());
         holder.invisText.setText(zem.getUrl());
         holder.invisText.setVisibility(View.INVISIBLE);
+
+        for (String url:
+             ownedList) {
+            if (zem.getUrl().equals(url)){
+                holder.button.setVisibility(View.GONE);
+                holder.cardView.setCardBackgroundColor(holder.cardView.getContext().getResources().getColor(R.color.light_grey));
+            }
+        }
     }
     @Override
     public int getItemCount() {

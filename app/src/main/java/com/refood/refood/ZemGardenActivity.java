@@ -66,20 +66,6 @@ public class ZemGardenActivity extends AppCompatActivity {
         numCoin = getIntent().getLongExtra("numCoins", 0);
         coinCount.setText(getString(R.string.coins_template, numCoin));
 
-        zemList = new ArrayList<>();
-        prepareZem();
-        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-        recyclerViewAdapter = new RecyclerViewAdapter(zemList, numCoin, coinCount, documentReference);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-//        recyclerViewAdapter.setOnItemClickListener(new ClickListener<Zem>(){
-//            @Override
-//            public void onItemClick(Zem data) {
-//                Toast.makeText(ZemGardenActivity.this, data.getPrice(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-        recyclerView.setAdapter(recyclerViewAdapter);
-
         docRef = FirebaseFirestore.getInstance().collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
         zemImage = findViewById(R.id.spinner_zems);
 
@@ -102,6 +88,20 @@ public class ZemGardenActivity extends AppCompatActivity {
         });
 
 
+//        zemList = new ArrayList<>();
+//        prepareZem();
+//        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+//        assert(!ownedList.isEmpty());
+//        recyclerViewAdapter = new RecyclerViewAdapter(zemList, numCoin, coinCount, documentReference, ownedList);
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+//        recyclerView.setLayoutManager(layoutManager);
+////        recyclerViewAdapter.setOnItemClickListener(new ClickListener<Zem>(){
+////            @Override
+////            public void onItemClick(Zem data) {
+////                Toast.makeText(ZemGardenActivity.this, data.getPrice(), Toast.LENGTH_SHORT).show();
+////            }
+////        });
+//        recyclerView.setAdapter(recyclerViewAdapter);
     }
 
     private void prepareZem(){
@@ -175,6 +175,24 @@ public class ZemGardenActivity extends AppCompatActivity {
 
 
                         zemImage.setSelection(index);
+
+
+
+
+                        zemList = new ArrayList<>();
+                        prepareZem();
+                        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+                        assert(!ownedList.isEmpty());
+                        recyclerViewAdapter = new RecyclerViewAdapter(zemList, numCoin, coinCount, documentReference, ownedList);
+                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ZemGardenActivity.this);
+                        recyclerView.setLayoutManager(layoutManager);
+//        recyclerViewAdapter.setOnItemClickListener(new ClickListener<Zem>(){
+//            @Override
+//            public void onItemClick(Zem data) {
+//                Toast.makeText(ZemGardenActivity.this, data.getPrice(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+                        recyclerView.setAdapter(recyclerViewAdapter);
 
                     } else {
                         Log.d(LOG_TAG, "No such document");
