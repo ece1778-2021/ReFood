@@ -18,16 +18,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ReFood">
+        <activity android:name=".ResourceActivity"></activity>
         <activity
             android:name=".SurveyActivity"
             android:label="@string/survey_title_text"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".BiometricsActivity"
             android:label="@string/survey_title_text"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".StatsActivity"
             android:label="@string/stats_text"
@@ -40,8 +39,8 @@
         <activity
             android:name=".ZemGardenActivity"
             android:label="@string/zem_garden_text"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".HomeActivity">
+            android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.refood.refood.HomeActivity" />
@@ -49,8 +48,8 @@
         <activity
             android:name=".ExerciseActivity"
             android:label="@string/exercise_text"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".HomeActivity">
+            android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.refood.refood.HomeActivity" />
@@ -63,8 +62,8 @@
         <activity
             android:name=".ProfileActivity"
             android:label="@string/profile_appbar_text"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".HomeActivity">
+            android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.refood.refood.HomeActivity" />

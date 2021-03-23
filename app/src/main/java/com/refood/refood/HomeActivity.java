@@ -14,6 +14,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,8 +24,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.data.Entry;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,6 +36,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Text;
 
@@ -64,6 +69,7 @@ public class HomeActivity extends AppCompatActivity {
     private ImageView leftButton, rightButton, bottomButton, logo;
     private TextView leftText, rightText, instruction;
     private Button nextTip;
+    private ImageView zemImage;
 
     private int tipProgress = 0;
 
@@ -80,6 +86,7 @@ public class HomeActivity extends AppCompatActivity {
         rightText = findViewById(R.id.go_exercise_text);
         instruction = findViewById(R.id.instructionBox);
         nextTip = findViewById(R.id.nextTip);
+        zemImage = findViewById(R.id.logo_image);
 
         instruction.setVisibility(View.GONE);
         nextTip.setVisibility(View.GONE);
@@ -95,6 +102,13 @@ public class HomeActivity extends AppCompatActivity {
         createNotificationChannel();
         init();
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        init();
+    }
+
 
     private void init() {
         if (user != null) {
@@ -116,6 +130,22 @@ public class HomeActivity extends AppCompatActivity {
                             mMinute = (long)(userStore.get("notificationMinute"));
                             setAlarm(isChecked, mHour, mMinute);
 
+                            String zemPath = (String) (userStore.get("zemPath"));
+                            StorageReference storageReference = mStorage.getReference().child(zemPath);
+                            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Log.d(LOG_TAG, "Successfully loaded uri");
+                                    Glide.with(zemImage.getContext() /* context */)
+                                            .load(uri)
+                                            .into(zemImage);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    Log.d(LOG_TAG, "Failed to load uri");
+                                }
+                            });
                         } else {
                             Log.d(LOG_TAG, "No such document");
                         }
@@ -177,6 +207,12 @@ public class HomeActivity extends AppCompatActivity {
     public void goFoodProfile(View view) {
         Intent intent = new Intent(this, com.refood.refood.ProfileActivity.class);
         startActivityForResult(intent, REQUEST_PROFILE_LOGOUT);
+    }
+
+
+    public void goResourceCenter(View view) {
+        Intent intent = new Intent(this, com.refood.refood.ResourceActivity.class);
+        startActivity(intent);
     }
 
     public void goExercise(View view) {
@@ -388,4 +424,5 @@ public class HomeActivity extends AppCompatActivity {
         params.verticalBias = newBias;
         view.setLayoutParams(params);
     }
+
 }
