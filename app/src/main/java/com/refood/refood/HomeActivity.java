@@ -209,6 +209,12 @@ public class HomeActivity extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_PROFILE_LOGOUT);
     }
 
+
+    public void goResourceCenter(View view) {
+        Intent intent = new Intent(this, com.refood.refood.ResourceActivity.class);
+        startActivity(intent);
+    }
+
     public void goExercise(View view) {
         Intent intent = new Intent(this, com.refood.refood.ExerciseActivity.class);
         intent.putExtra("numCoins", mNumCoins);
@@ -418,4 +424,5 @@ public class HomeActivity extends AppCompatActivity {
         params.verticalBias = newBias;
         view.setLayoutParams(params);
     }
+
 }
