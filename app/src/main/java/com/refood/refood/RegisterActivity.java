@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -112,6 +113,11 @@ public class RegisterActivity extends AppCompatActivity {
                                 userStore.put("notificationEnabled", false);
                                 userStore.put("notificationHour", 0);
                                 userStore.put("notificationMinute", 0);
+                                userStore.put("zemPath", "/zems/zem1.png");
+
+                                List<String> zemList = Collections.emptyList();
+                                zemList.add("/zems/zem1.png");
+                                userStore.put("ownedZems", zemList);
 
                                 String uid = user.getUid();
                                 // Add a new document with a generated ID
