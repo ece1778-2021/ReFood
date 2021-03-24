@@ -59,6 +59,7 @@
     <string name="click_here_to_reset">Click Here To Reset</string>
     <string name="set_notification_time">Set Notification Time</string>
     <string name="collapse_time_picker">Collapse Time Picker</string>
+    <string name="resource_title_text">Resource Center</string>
     <string-array name="sex_list">
         <item>Prefer not to say</item>
         <item>Male</item>

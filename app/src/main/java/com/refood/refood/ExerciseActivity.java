@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -13,6 +14,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -35,6 +38,7 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,6 +49,8 @@ import java.util.Map;
 public class ExerciseActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = ExerciseActivity.class.getSimpleName();
+    private static final String TRANSLATION_Y = "translationY";
+    private static final String TRANSLATION_X = "translationX";
 
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
@@ -116,6 +122,11 @@ public class ExerciseActivity extends AppCompatActivity {
     private int mAppearTime;
     private int mISI;
 
+    private String mTranslation;
+    private MediaPlayer mCoinCollectedSound;
+    private MediaPlayer mCoinMissedSound;
+    private MediaPlayer mExplosionSound;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,6 +143,7 @@ public class ExerciseActivity extends AppCompatActivity {
         setCoinDisplay();
 
         mCue = findViewById(R.id.cue_view);
+        mTranslation = TRANSLATION_Y;
         mStartButton = findViewById(R.id.start_exercise_button);
         mExeInstr1 = findViewById(R.id.exerInstruction1);
         mExeInstr2 = findViewById(R.id.exerInstruction2);
@@ -145,6 +157,10 @@ public class ExerciseActivity extends AppCompatActivity {
         mRound = 0;
         mtotalResponseTime = 0;
         mNumClicks = 0;
+
+        mCoinCollectedSound = MediaPlayer.create(getApplicationContext(), R.raw.coin_collect);
+        mCoinMissedSound = MediaPlayer.create(getApplicationContext(), R.raw.coin_miss);
+        mExplosionSound = MediaPlayer.create(getApplicationContext(), R.raw.explosion);
     }
 
     private void updateCoinsStorage() {
@@ -354,7 +370,46 @@ public class ExerciseActivity extends AppCompatActivity {
                 break;
             case 2:
                 mCue.setY(0);
-                ObjectAnimator animation = ObjectAnimator.ofFloat(mCue, "translationY", mParentHeight);
+                ObjectAnimator animation;
+
+                // animation direction
+                switch (mLevel)
+                {
+                    case 1:
+                    case 2:
+                    case 3:
+                    default:
+                        animation = ObjectAnimator.ofFloat(mCue, TRANSLATION_Y, mParentHeight);
+                        break;
+
+                    case 4:
+                        if (mTranslation.equals(TRANSLATION_Y))
+                        {
+                            animation = ObjectAnimator.ofFloat(mCue, TRANSLATION_Y, mParentHeight);
+                        }
+                        else
+                        {
+                            mCue.setX(0);
+                            mCue.setY(randomInRange(0, mParentHeight));
+                            animation = ObjectAnimator.ofFloat(mCue, TRANSLATION_X, mParentWidth);
+                        }
+                        break;
+                }
+
+                // animation style
+                switch (mLevel)
+                {
+                    case 1:
+                    default:
+                        animation.setInterpolator(new LinearInterpolator());
+                        break;
+
+                    case 2:
+                    case 3:
+                    case 4:
+                        animation.setInterpolator(new AccelerateInterpolator(0.5f * mLevel));
+                        break;
+                }
                 animation.setDuration(mAppearTime);
                 animation.start();
                 break;
@@ -370,6 +425,7 @@ public class ExerciseActivity extends AppCompatActivity {
         double unhealthyFoodThreshold = ((double)mNumUnhealthyFoodCues) / ((double)sum) + nonFoodThreshold;
         double coinThreshold = ((double)mNumCoinCues) / ((double)sum) + unhealthyFoodThreshold;
         double randomNum = Math.random();
+        mTranslation = TRANSLATION_Y;
         if (randomNum < healthyFoodThreshold)
         {
             mCue.setBackgroundResource(R.drawable.green_border_background);
@@ -400,6 +456,7 @@ public class ExerciseActivity extends AppCompatActivity {
             mGoChosen = true;
             mSpecialCue = true;
             mNumCoinCues--;
+            mTranslation = TRANSLATION_X;
             return mCoinCue;
         }
         else
@@ -408,6 +465,7 @@ public class ExerciseActivity extends AppCompatActivity {
             mGoChosen = false;
             mSpecialCue = true;
             mNumBombCues--;
+            mTranslation = TRANSLATION_X;
             return mBombCue;
         }
     }
@@ -422,8 +480,7 @@ public class ExerciseActivity extends AppCompatActivity {
         return (int)(Math.random() * (max-min) + min);
     }
 
-    private void updateCoinsCounter(boolean increment, boolean special)
-    {
+    private void updateCoinsCounter(boolean increment, boolean special) {
         int stride = special?5:1;
         if (increment)
         {
@@ -431,6 +488,7 @@ public class ExerciseActivity extends AppCompatActivity {
             mScore+=stride;
             mFeedback.setText(getString(R.string.increment_feedback_text, stride));
             mFeedback.setTextColor(getColor(R.color.green));
+            replaySound(mCoinCollectedSound);
         }
         else
         {
@@ -438,6 +496,14 @@ public class ExerciseActivity extends AppCompatActivity {
             mScore-=stride;
             mFeedback.setText(getString(R.string.decrement_feedback_text, stride));
             mFeedback.setTextColor(getColor(R.color.red));
+            if (!special)
+            {
+                replaySound(mCoinMissedSound);
+            }
+            else
+            {
+                replaySound(mExplosionSound);
+            }
         }
         mFeedback.setVisibility(View.VISIBLE);
         new CountDownTimer(500, 500) {
@@ -527,5 +593,17 @@ public class ExerciseActivity extends AppCompatActivity {
             mGameProgress = ROUND_DURATION;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void replaySound(MediaPlayer mp)
+    {
+        mp.stop();
+        try
+        {
+            mp.prepare();
+        }
+        catch (Exception e){}
+        mp.start();
+
     }
 }

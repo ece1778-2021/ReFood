@@ -18,15 +18,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ReFood">
-        <activity android:name=".ResourceActivity"></activity>
+        <activity android:name=".ResourceActivity"
+            android:label="@string/resource_title_text"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.refood.refood.HomeActivity" />
+        </activity>
         <activity
             android:name=".SurveyActivity"
             android:label="@string/survey_title_text"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
             android:name=".BiometricsActivity"
             android:label="@string/survey_title_text"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
             android:name=".StatsActivity"
             android:label="@string/stats_text"
