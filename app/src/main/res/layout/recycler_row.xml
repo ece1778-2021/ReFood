@@ -16,14 +16,13 @@ android:layout_margin="8dp">
 
         <ImageView
             android:id="@+id/image"
-            android:layout_height="match_parent"
             android:layout_width="0dp"
-            app:layout_constraintDimensionRatio="1:1"
+            android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:scaleType="centerInside"
+            app:layout_constraintDimensionRatio="1:1"
             cardView:layout_constraintStart_toStartOf="parent"
-            cardView:layout_constraintTop_toTopOf="parent"
-            tools:background="@tools:sample/backgrounds/scenic" />
+            cardView:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/price"
@@ -53,5 +52,13 @@ android:layout_margin="8dp">
             cardView:layout_constraintEnd_toEndOf="parent"
             cardView:layout_constraintStart_toEndOf="@+id/price"
             cardView:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/invisText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="@+id/image"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

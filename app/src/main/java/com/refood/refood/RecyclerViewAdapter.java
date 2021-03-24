@@ -1,5 +1,6 @@
 package com.refood.refood;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,62 +16,44 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.firestore.Transaction;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-class Zem {
-    private int price;
-    private int image;
-    private String status;
-    public Zem(int price, int image) {
-        this.price = price;
-        this.image = image;
-        this.status = "Buy";
-    }
-    public int getPrice() {
-        return price;
-    }
-    public void setPrice(String title) {
-        this.price = price;
-    }
-    public int getImage() {
-        return image;
-    }
-    public void setImage(int image) {
-        this.image = image;
-    }
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    public String getStatus(){
-        return status;
-    }
-}
+import java.util.concurrent.TimeUnit;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder>{
     private List<Zem> zemList;
     private long numCoins;
     private TextView textView;
     private DocumentReference documentReference;
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseFirestore mDb = FirebaseFirestore.getInstance();
+    private List<String> ownedList;
 
     private static final String LOG_TAG = RecyclerViewAdapter.class.getSimpleName();
 
 
-    RecyclerViewAdapter(List<Zem> zemList, long numCoins, TextView textView, DocumentReference documentReference){
+    RecyclerViewAdapter(List<Zem> zemList, long numCoins, TextView textView, DocumentReference documentReference, List<String> ownedList){
         this.zemList = zemList;
         this.numCoins = numCoins;
         this.textView = textView;
         this.documentReference = documentReference;
+        this.ownedList = ownedList;
     }
     @Override
     public RecyclerViewAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_row,parent,false);
         return new MyViewHolder(view);
     }
     @Override
@@ -79,6 +62,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.price.setText("$"+zem.getPrice());
         holder.image.setBackgroundResource(zem.getImage());
         holder.button.setText(zem.getStatus());
+        holder.invisText.setText(zem.getUrl());
+        holder.invisText.setVisibility(View.INVISIBLE);
+
+        for (String url:
+             ownedList) {
+            if (zem.getUrl().equals(url)){
+                holder.button.setVisibility(View.GONE);
+                holder.cardView.setCardBackgroundColor(holder.cardView.getContext().getResources().getColor(R.color.light_grey));
+            }
+        }
     }
     @Override
     public int getItemCount() {
@@ -86,6 +79,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView price;
+        private TextView invisText;
         private ImageView image;
         private Button button;
         private CardView cardView;
@@ -95,6 +89,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             image = itemView.findViewById(R.id.image);
             button = itemView.findViewById(R.id.zemButton);
             cardView = itemView.findViewById(R.id.cardView);
+            invisText = itemView.findViewById(R.id.invisText);
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -105,12 +100,46 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     CharSequence priceString = price.getText();
                     priceString = priceString.subSequence(1, priceString.length());
                     int priceInt = Integer.parseInt((String) priceString);
-                    numCoins = numCoins - priceInt;
-                    textView.setText(textView.getContext().getString(R.string.coins_template, numCoins));
-                    button.setVisibility(View.GONE);
-                    cardView.setCardBackgroundColor(cardView.getContext().getResources().getColor(R.color.light_grey));
+
+                    if (numCoins>=priceInt) {
+                        numCoins = numCoins - priceInt;
+                        textView.setText(textView.getContext().getString(R.string.coins_template, numCoins));
+                        button.setVisibility(View.GONE);
+                        cardView.setCardBackgroundColor(cardView.getContext().getResources().getColor(R.color.light_grey));
+
+                        String zemUrl = (String) invisText.getText();
+                        Map<String, Object> data = new HashMap<>();
+                        documentReference.update("ownedZems", FieldValue.arrayUnion(zemUrl));
+
+                        updateCoinsStorage(numCoins);
+                    } else {
+                        Toast.makeText(cardView.getContext(), "Not enough coins", Toast.LENGTH_SHORT);
+                    }
                 }
-                });
+            });
+        }
+    }
+
+    private void updateCoinsStorage(Long mNumCoins) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("numCoins", mNumCoins);
+
+        if (user != null) {
+            String uid = user.getUid();
+            mDb.collection("users").document(uid)
+                    .set(data, SetOptions.merge())
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(LOG_TAG, "Coins successfully updated in FireStore!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(LOG_TAG, "Error writing document", e);
+                        }
+                    });
         }
     }
 }
