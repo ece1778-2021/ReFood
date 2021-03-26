@@ -126,6 +126,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private MediaPlayer mCoinCollectedSound;
     private MediaPlayer mCoinMissedSound;
     private MediaPlayer mExplosionSound;
+    private boolean mSoundEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +159,7 @@ public class ExerciseActivity extends AppCompatActivity {
         mtotalResponseTime = 0;
         mNumClicks = 0;
 
+        mSoundEnabled = true;
         mCoinCollectedSound = MediaPlayer.create(getApplicationContext(), R.raw.coin_collect);
         mCoinMissedSound = MediaPlayer.create(getApplicationContext(), R.raw.coin_miss);
         mExplosionSound = MediaPlayer.create(getApplicationContext(), R.raw.explosion);
@@ -592,18 +594,31 @@ public class ExerciseActivity extends AppCompatActivity {
         if (id == R.id.skip_action) {
             mGameProgress = ROUND_DURATION;
         }
+        else if (id == R.id.sound_toggle_action) {
+            mSoundEnabled = !mSoundEnabled;
+            if (mSoundEnabled)
+            {
+                item.setIcon(R.drawable.unmute);
+            }
+            else
+            {
+                item.setIcon(R.drawable.mute);
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 
     private void replaySound(MediaPlayer mp)
     {
-        mp.stop();
-        try
+        if (mSoundEnabled)
         {
-            mp.prepare();
+            mp.stop();
+            try
+            {
+                mp.prepare();
+            }
+            catch (Exception e){}
+            mp.start();
         }
-        catch (Exception e){}
-        mp.start();
-
     }
 }
