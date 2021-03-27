@@ -5,7 +5,11 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorListener;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,11 +62,10 @@ public class ExerciseActivity extends AppCompatActivity {
     private FirebaseUser user;
 
     private static final int NUM_ROUND = 2;
-    private static final int NUM_LEVEL = 4;
+    private static final int NUM_LEVEL = 5;
 //    private static final int ROUND_DURATION = 40;
     private static final int ROUND_DURATION = 20;
-//    private static final int DEFAULT_CUE_NUM = 15;
-    private static final int DEFAULT_CUE_NUM = 7;
+    private static final int DEFAULT_SPECIAL_CUE_NUM = 2;
     private static final int DEFAULT_APPEAR_TIME = 1500;
     private static final int DEFAULT_ISI = 500;
     private int mGameProgress;
@@ -95,9 +98,9 @@ public class ExerciseActivity extends AppCompatActivity {
             R.drawable.unhealthy_icecream2, R.drawable.unhealthy_icecream3, R.drawable.unhealthy_icecream4,
             R.drawable.unhealthy_icecream5, R.drawable.unhealthy_nachos, R.drawable.unhealthy_pizza1,
             R.drawable.unhealthy_pizza2, R.drawable.unhealthy_snickers, R.drawable.unhealthy_twinkie};
-    private final int[] mNonFoodCue = {R.drawable.clothes};
     private final int[] mCoinCue = {R.drawable.coin};
     private final int[] mBombCue = {R.drawable.bomb};
+    private final int[] mBellCue = {R.drawable.bell};
 
     private int mParentWidth;
     private int mParentHeight;
@@ -108,14 +111,15 @@ public class ExerciseActivity extends AppCompatActivity {
     private long mScore;
     private boolean mGoChosen;
     private boolean mSpecialCue;
+    private boolean mIsBell;
 
     private int mNumHealthyFoodCues;
     private int mNumUnhealthyFoodCues;
-    private int mNumNonFoodCues;
     private int mNumCoinCues;
     private int mNumBombCues;
+    private int mNumBellCues;
 
-    private int mtotalResponseTime;
+    private int mTotalResponseTime;
     private int mCurrentResponseTime;
     private int mNumClicks;
 
@@ -127,6 +131,11 @@ public class ExerciseActivity extends AppCompatActivity {
     private MediaPlayer mCoinMissedSound;
     private MediaPlayer mExplosionSound;
     private boolean mSoundEnabled;
+
+    // The following are used for the shake detection
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private ShakeDetector mShakeDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,13 +165,29 @@ public class ExerciseActivity extends AppCompatActivity {
         setXpBar();
 
         mRound = 0;
-        mtotalResponseTime = 0;
+        mTotalResponseTime = 0;
         mNumClicks = 0;
 
         mSoundEnabled = true;
         mCoinCollectedSound = MediaPlayer.create(getApplicationContext(), R.raw.coin_collect);
         mCoinMissedSound = MediaPlayer.create(getApplicationContext(), R.raw.coin_miss);
         mExplosionSound = MediaPlayer.create(getApplicationContext(), R.raw.explosion);
+
+        // ShakeDetector initialization
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeDetector = new ShakeDetector();
+        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+
+            @Override
+            public void onShake(int count) {
+                if (mIsBell && count > 0)
+                {
+                    countClickHelper();
+                    mIsBell = false;
+                }
+            }
+        });
     }
 
     private void updateCoinsStorage() {
@@ -270,21 +295,24 @@ public class ExerciseActivity extends AppCompatActivity {
             {
                 case 1:
                 case 2:
-                    mNumHealthyFoodCues = DEFAULT_CUE_NUM;
-                    mNumUnhealthyFoodCues = DEFAULT_CUE_NUM;
                     mNumCoinCues = 0;
                     mNumBombCues = 0;
-                    mNumNonFoodCues = ROUND_DURATION - mNumHealthyFoodCues - mNumUnhealthyFoodCues - mNumCoinCues - mNumBombCues;
+                    mNumBellCues = 0;
                     break;
                 case 3:
                 case 4:
-                    mNumHealthyFoodCues = DEFAULT_CUE_NUM;
-                    mNumUnhealthyFoodCues = DEFAULT_CUE_NUM;
-                    mNumCoinCues = 2;
-                    mNumBombCues = 2;
-                    mNumNonFoodCues = ROUND_DURATION - mNumHealthyFoodCues - mNumUnhealthyFoodCues - mNumCoinCues - mNumBombCues;
+                    mNumCoinCues = DEFAULT_SPECIAL_CUE_NUM;
+                    mNumBombCues = DEFAULT_SPECIAL_CUE_NUM;
+                    mNumBellCues = 0;
+                    break;
+                case 5:
+                    mNumCoinCues = DEFAULT_SPECIAL_CUE_NUM;
+                    mNumBombCues = DEFAULT_SPECIAL_CUE_NUM;
+                    mNumBellCues = DEFAULT_SPECIAL_CUE_NUM;
                     break;
             }
+            mNumHealthyFoodCues = (ROUND_DURATION - mNumCoinCues - mNumBombCues - mNumBellCues)/2;
+            mNumUnhealthyFoodCues = mNumHealthyFoodCues;
             mStartButton.setVisibility(View.GONE);
             mExeInstrImg.setVisibility(View.GONE);
             mExeInstr1.setVisibility(View.GONE);
@@ -328,6 +356,7 @@ public class ExerciseActivity extends AppCompatActivity {
                             mISI = randomInRange(300, 1000);
                             break;
                         case 4:
+                        case 5:
                             mISI = randomInRange(300, 1200);
                             break;
                     }
@@ -349,7 +378,7 @@ public class ExerciseActivity extends AppCompatActivity {
                         updateCoinsStorage();
                         updateScoreHistoryStorage();
                         mStartButton.setText(R.string.game_end_text);
-                        Toast.makeText(ExerciseActivity.this, "Average Response Time = " + (mNumClicks!=0? String.valueOf(mtotalResponseTime/mNumClicks) : "No clicks done"),
+                        Toast.makeText(ExerciseActivity.this, "Average Response Time = " + (mNumClicks!=0? String.valueOf(mTotalResponseTime/mNumClicks) : "No clicks done"),
                                 Toast.LENGTH_SHORT).show();
                     }
                     else
@@ -385,6 +414,7 @@ public class ExerciseActivity extends AppCompatActivity {
                         break;
 
                     case 4:
+                    case 5:
                         if (mTranslation.equals(TRANSLATION_Y))
                         {
                             animation = ObjectAnimator.ofFloat(mCue, TRANSLATION_Y, mParentHeight);
@@ -409,7 +439,8 @@ public class ExerciseActivity extends AppCompatActivity {
                     case 2:
                     case 3:
                     case 4:
-                        animation.setInterpolator(new AccelerateInterpolator(0.5f * mLevel));
+                    case 5:
+                        animation.setInterpolator(new AccelerateInterpolator(0.4f + 0.3f * mLevel));
                         break;
                 }
                 animation.setDuration(mAppearTime);
@@ -421,10 +452,10 @@ public class ExerciseActivity extends AppCompatActivity {
         mCue.setVisibility(View.VISIBLE);
     }
     private int[] chooseGoCue() {
-        int sum = mNumHealthyFoodCues + mNumNonFoodCues + mNumUnhealthyFoodCues + mNumCoinCues + mNumBombCues;
+        int sum = mNumHealthyFoodCues + mNumUnhealthyFoodCues + mNumCoinCues + mNumBombCues + mNumBellCues;
         double healthyFoodThreshold = ((double)mNumHealthyFoodCues) / ((double)sum);
-        double nonFoodThreshold = ((double)mNumNonFoodCues) / ((double)sum) + healthyFoodThreshold;
-        double unhealthyFoodThreshold = ((double)mNumUnhealthyFoodCues) / ((double)sum) + nonFoodThreshold;
+        double bellThreshold = ((double)mNumBellCues) / ((double)sum) + healthyFoodThreshold;
+        double unhealthyFoodThreshold = ((double)mNumUnhealthyFoodCues) / ((double)sum) + bellThreshold;
         double coinThreshold = ((double)mNumCoinCues) / ((double)sum) + unhealthyFoodThreshold;
         double randomNum = Math.random();
         mTranslation = TRANSLATION_Y;
@@ -433,22 +464,26 @@ public class ExerciseActivity extends AppCompatActivity {
             mCue.setBackgroundResource(R.drawable.green_border_background);
             mGoChosen = true;
             mSpecialCue = false;
+            mIsBell = false;
             mNumHealthyFoodCues--;
             return mGoCue;
         }
-        else if (randomNum < nonFoodThreshold)
+        else if (randomNum < bellThreshold)
         {
-            mCue.setBackgroundResource(R.drawable.green_border_background);
+            mCue.setBackgroundResource(0);
             mGoChosen = true;
-            mSpecialCue = false;
-            mNumNonFoodCues--;
-            return mNonFoodCue;
+            mSpecialCue = true;
+            mIsBell = true;
+            mNumBellCues--;
+            mTranslation = TRANSLATION_X;
+            return mBellCue;
         }
         else if (randomNum < unhealthyFoodThreshold)
         {
             mCue.setBackgroundResource(R.drawable.red_border_background);
             mGoChosen = false;
             mSpecialCue = false;
+            mIsBell = false;
             mNumUnhealthyFoodCues--;
             return mNoGoCue;
         }
@@ -457,6 +492,7 @@ public class ExerciseActivity extends AppCompatActivity {
             mCue.setBackgroundResource(0);
             mGoChosen = true;
             mSpecialCue = true;
+            mIsBell = false;
             mNumCoinCues--;
             mTranslation = TRANSLATION_X;
             return mCoinCue;
@@ -466,6 +502,7 @@ public class ExerciseActivity extends AppCompatActivity {
             mCue.setBackgroundResource(0);
             mGoChosen = false;
             mSpecialCue = true;
+            mIsBell = false;
             mNumBombCues--;
             mTranslation = TRANSLATION_X;
             return mBombCue;
@@ -525,8 +562,16 @@ public class ExerciseActivity extends AppCompatActivity {
     }
 
     public void countClick(View view) {
+        if (!mIsBell)
+        {
+            countClickHelper();
+        }
+    }
+
+    private void countClickHelper()
+    {
         mCue.setVisibility(View.INVISIBLE);
-        mtotalResponseTime += mCurrentResponseTime;
+        mTotalResponseTime += mCurrentResponseTime;
         mNumClicks++;
         updateCoinsCounter(mGoChosen, mSpecialCue);
     }
@@ -620,5 +665,19 @@ public class ExerciseActivity extends AppCompatActivity {
             catch (Exception e){}
             mp.start();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Add the following line to register the Session Manager Listener onResume
+        mSensorManager.registerListener(mShakeDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
+    }
+
+    @Override
+    public void onPause() {
+        // Add the following line to unregister the Sensor Manager onPause
+        mSensorManager.unregisterListener(mShakeDetector);
+        super.onPause();
     }
 }
