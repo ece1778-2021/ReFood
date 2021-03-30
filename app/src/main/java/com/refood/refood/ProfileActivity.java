@@ -128,6 +128,7 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
 
             updateNextSurveyDate();
         }
+        BackgroundMusic.getInstance(this).start();
     }
 
     // create an action bar button
@@ -364,5 +365,17 @@ public class ProfileActivity extends AppCompatActivity implements CompoundButton
             mTimePicker.setVisibility(View.GONE);
             mButtonSaveTime.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        BackgroundMusic.getInstance(this).start();
+    }
+
+    @Override
+    protected void onPause() {
+        BackgroundMusic.getInstance(this).pause();
+        super.onPause();
     }
 }

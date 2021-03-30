@@ -87,6 +87,8 @@ public class ZemGardenActivity extends AppCompatActivity {
             }
         });
 
+        BackgroundMusic.getInstance(this).start();
+
 
 //        zemList = new ArrayList<>();
 //        prepareZem();
@@ -216,6 +218,18 @@ public class ZemGardenActivity extends AppCompatActivity {
         return -1;
     }
 
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        BackgroundMusic.getInstance(this).start();
+    }
+
+    @Override
+    protected void onPause() {
+        BackgroundMusic.getInstance(this).pause();
+        super.onPause();
+    }
 
 
 }

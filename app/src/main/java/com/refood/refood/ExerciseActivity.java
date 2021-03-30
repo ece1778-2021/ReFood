@@ -164,6 +164,7 @@ public class ExerciseActivity extends AppCompatActivity {
         mXpBar = findViewById(R.id.xp_bar);
         setXpBar();
 
+        mGameProgress = ROUND_DURATION;
         mRound = 0;
         mTotalResponseTime = 0;
         mNumClicks = 0;
@@ -188,6 +189,7 @@ public class ExerciseActivity extends AppCompatActivity {
                 }
             }
         });
+        BackgroundMusic.getInstance(this).start();
     }
 
     private void updateCoinsStorage() {
@@ -313,6 +315,10 @@ public class ExerciseActivity extends AppCompatActivity {
             }
             mNumHealthyFoodCues = (ROUND_DURATION - mNumCoinCues - mNumBombCues - mNumBellCues)/2;
             mNumUnhealthyFoodCues = mNumHealthyFoodCues;
+            if (!mStartButton.getText().equals(getString(R.string.round_transition_text)))
+            {
+                BackgroundMusic.getInstance(getApplicationContext()).switchBGM();
+            }
             mStartButton.setVisibility(View.GONE);
             mExeInstrImg.setVisibility(View.GONE);
             mExeInstr1.setVisibility(View.GONE);
@@ -380,6 +386,7 @@ public class ExerciseActivity extends AppCompatActivity {
                         mStartButton.setText(R.string.game_end_text);
                         Toast.makeText(ExerciseActivity.this, "Average Response Time = " + (mNumClicks!=0? String.valueOf(mTotalResponseTime/mNumClicks) : "No clicks done"),
                                 Toast.LENGTH_SHORT).show();
+                        BackgroundMusic.getInstance(getApplicationContext()).switchBGM();
                     }
                     else
                     {
@@ -670,14 +677,31 @@ public class ExerciseActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        BackgroundMusic.getInstance(this).start();
         // Add the following line to register the Session Manager Listener onResume
         mSensorManager.registerListener(mShakeDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
     public void onPause() {
+        BackgroundMusic.getInstance(this).pause();
         // Add the following line to unregister the Sensor Manager onPause
         mSensorManager.unregisterListener(mShakeDetector);
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mGameProgress>=ROUND_DURATION) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        if (mGameProgress>=ROUND_DURATION) {
+            return super.onSupportNavigateUp();
+        }
+        return false;
     }
 }

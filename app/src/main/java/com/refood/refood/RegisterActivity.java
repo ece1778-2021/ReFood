@@ -73,6 +73,8 @@ public class RegisterActivity extends AppCompatActivity {
         mPasswordEditText = findViewById(R.id.editTextRegisterPassword);
         mConfirmPasswordEditText = findViewById(R.id.editTextRegisterConfirmPassword);
         mUsernameEditText = findViewById(R.id.editTextRegisterUsername);
+
+        BackgroundMusic.getInstance(this).start();
     }
 
     public void DoRegister(View view) {
@@ -176,6 +178,18 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        BackgroundMusic.getInstance(this).start();
+    }
+
+    @Override
+    protected void onPause() {
+        BackgroundMusic.getInstance(this).pause();
+        super.onPause();
     }
 
 }

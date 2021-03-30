@@ -83,6 +83,7 @@ public class StatsActivity extends AppCompatActivity{
         mStreak.setText(String.valueOf(intent.getIntExtra("streak", 0)));
 
         populateInfo();
+        BackgroundMusic.getInstance(this).start();
     }
 
     private void populateInfo(){
@@ -168,6 +169,18 @@ public class StatsActivity extends AppCompatActivity{
 
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setEnabled(false);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        BackgroundMusic.getInstance(this).start();
+    }
+
+    @Override
+    protected void onPause() {
+        BackgroundMusic.getInstance(this).pause();
+        super.onPause();
     }
 
 }

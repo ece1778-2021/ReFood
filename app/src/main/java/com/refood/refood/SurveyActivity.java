@@ -47,6 +47,8 @@ public class SurveyActivity extends AppCompatActivity {
         mQ2Answer = "";
         mQ3Answer = "";
         mQ4Answer = "";
+
+        BackgroundMusic.getInstance(this).start();
     }
 
     public void saveSurveyResults(View view)
@@ -193,5 +195,17 @@ public class SurveyActivity extends AppCompatActivity {
                 break;
         }
 
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        BackgroundMusic.getInstance(this).start();
+    }
+
+    @Override
+    protected void onPause() {
+        BackgroundMusic.getInstance(this).pause();
+        super.onPause();
     }
 }

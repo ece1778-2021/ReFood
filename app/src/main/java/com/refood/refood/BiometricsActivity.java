@@ -50,6 +50,8 @@ public class BiometricsActivity extends AppCompatActivity {
         mAgePicker.setMaxValue(200);
         mWeightPicker.setMinValue(0);
         mWeightPicker.setMaxValue(1000);
+
+        BackgroundMusic.getInstance(this).start();
     }
 
     public void SaveBiometrics(View view) {
@@ -81,5 +83,17 @@ public class BiometricsActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        BackgroundMusic.getInstance(this).start();
+    }
+
+    @Override
+    protected void onPause() {
+        BackgroundMusic.getInstance(this).pause();
+        super.onPause();
     }
 }

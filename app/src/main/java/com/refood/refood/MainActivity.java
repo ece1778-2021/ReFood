@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
         mEmailEditText = findViewById(R.id.editTextLoginEmailAddress);
         mPasswordEditText = findViewById(R.id.editTextLoginPassword);
+
+        BackgroundMusic.getInstance(this);
     }
 
     public void LaunchRegister(View view) {
@@ -99,5 +101,17 @@ public class MainActivity extends AppCompatActivity {
 
     static public boolean isEmptyString(String inStr) {
         return inStr==null || inStr.trim().isEmpty();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        BackgroundMusic.getInstance(this).start();
+    }
+
+    @Override
+    protected void onPause() {
+        BackgroundMusic.getInstance(this).pause();
+        super.onPause();
     }
 }
