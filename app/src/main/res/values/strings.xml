@@ -60,6 +60,7 @@
     <string name="set_notification_time">Set Notification Time</string>
     <string name="collapse_time_picker">Collapse Time Picker</string>
     <string name="resource_title_text">Resource Center</string>
+    <string name="next_tip">Next Tip</string>
     <string-array name="sex_list">
         <item>Prefer not to say</item>
         <item>Male</item>

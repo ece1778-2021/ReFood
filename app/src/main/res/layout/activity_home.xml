@@ -108,10 +108,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_top_margin"
-        android:backgroundTint="@color/common_google_signin_btn_text_light"
+        android:layout_marginStart="@dimen/default_side_margin"
+        android:backgroundTint="@color/button_color"
         android:onClick="goFoodProfile"
         android:text="@string/food_profile_text"
         app:layout_constraintEnd_toStartOf="@+id/home_coin_text"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_coin_text" />
 
     <Button
@@ -119,10 +121,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:backgroundTint="@color/common_google_signin_btn_text_light"
+        android:layout_marginEnd="@dimen/default_side_margin"
+        android:backgroundTint="@color/button_color"
         android:onClick="goResourceCenter"
         android:text="resource center"
-        app:layout_constraintStart_toEndOf="@+id/home_coin_text"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_coin_text" />
 
     <ImageView
@@ -210,7 +213,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="nextTipOnClick"
-        android:text="Next TIp"
+        android:text="@string/next_tip"
+        android:backgroundTint="@color/button_color"
         app:layout_constraintBottom_toTopOf="@+id/go_stats_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

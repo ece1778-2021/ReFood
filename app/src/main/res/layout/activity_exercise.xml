@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="32dp"
-        android:backgroundTint="@color/common_google_signin_btn_text_light"
+        android:backgroundTint="@color/button_color"
         android:onClick="startExercise"
         android:text="@string/start_exercise_text"
         app:layout_constraintBottom_toBottomOf="parent"

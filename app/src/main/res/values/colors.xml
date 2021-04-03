@@ -11,4 +11,10 @@
     <color name="green">#FF00FF00</color>
     <color name="orange">#FFFF8800</color>
     <color name="light_grey">#E0E0E0</color>
+    <color name="lime_green">#32CD32</color>
+    <color name="forest_green">#228b22</color>
+    <color name="blue">#0000FF</color>
+    <color name="cyan">#2bc9ed</color>
+    <color name="button_color">#2bc9ed</color>
+
 </resources>

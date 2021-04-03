@@ -91,6 +91,10 @@ public class HomeActivity extends AppCompatActivity {
         nextTip = findViewById(R.id.nextTip);
         zemImage = findViewById(R.id.logo_image);
         mBGMToggle = findViewById(R.id.bgmToggle);
+        if (!BackgroundMusic.getInstance(this).getBGMEnabled())
+        {
+            mBGMToggle.setImageResource(R.drawable.mute);
+        }
 
         instruction.setVisibility(View.GONE);
         nextTip.setVisibility(View.GONE);
