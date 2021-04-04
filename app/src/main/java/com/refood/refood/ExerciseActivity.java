@@ -20,9 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -137,6 +139,9 @@ public class ExerciseActivity extends AppCompatActivity {
     private Sensor mAccelerometer;
     private ShakeDetector mShakeDetector;
 
+    private Spinner mSelectLevelSpinner;
+    private boolean mLevelSelected;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,6 +194,30 @@ public class ExerciseActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mLevelSelected = false;
+        mSelectLevelSpinner = findViewById(R.id.select_level_spinner);
+        mSelectLevelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int arg2, long arg3) {
+                int level = Integer.parseInt(mSelectLevelSpinner.getSelectedItem().toString());
+                if (level != 0)
+                {
+                    mLevel = level;
+                    mLevelSelected = true;
+                    setXpBarHelper(0);
+                    mSelectLevelSpinner.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+
+            }
+        });
+
         BackgroundMusic.getInstance(this).start();
     }
 
@@ -617,16 +646,24 @@ public class ExerciseActivity extends AppCompatActivity {
     }
 
     private void setXpBarHelper(int xp) {
-        int progressRatio = 2;
-        mLevel = 1;
-        while (xp >= progressRatio && mLevel < NUM_LEVEL)
+        if (!mLevelSelected)
         {
-            xp-=progressRatio;
-            progressRatio ++;
-            mLevel++;
+            int progressRatio = 2;
+            mLevel = 1;
+            while (xp >= progressRatio && mLevel < NUM_LEVEL)
+            {
+                xp-=progressRatio;
+                progressRatio ++;
+                mLevel++;
+            }
+            mXpText.setText(getString(R.string.level_template, mLevel));
+            mXpBar.setProgress(120/progressRatio*xp);
         }
-        mXpText.setText(getString(R.string.level_template, mLevel));
-        mXpBar.setProgress(120/progressRatio*xp);
+        else
+        {
+            mXpText.setText(getString(R.string.level_template, mLevel));
+            mXpBar.setProgress(120);
+        }
     }
 
     // create an action bar button
@@ -703,5 +740,13 @@ public class ExerciseActivity extends AppCompatActivity {
             return super.onSupportNavigateUp();
         }
         return false;
+    }
+
+    public void toggleSelectLevel(View view) {
+        if (mSelectLevelSpinner.getVisibility() == View.VISIBLE) {
+            mSelectLevelSpinner.setVisibility(View.GONE);
+        } else if (mGameProgress>=ROUND_DURATION){
+            mSelectLevelSpinner.setVisibility(View.VISIBLE);
+        }
     }
 }

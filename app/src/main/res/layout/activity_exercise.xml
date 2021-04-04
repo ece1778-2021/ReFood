@@ -74,6 +74,7 @@
         android:id="@+id/exercise_xp_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="toggleSelectLevel"
         android:text="@string/level_template"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -119,4 +120,14 @@
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instruction_image" />
+
+    <Spinner
+        android:id="@+id/select_level_spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:entries="@array/select_level_options"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/exercise_xp_text"
+        app:layout_constraintStart_toStartOf="@+id/exercise_xp_text"
+        app:layout_constraintTop_toBottomOf="@+id/exercise_xp_text" />
 </androidx.constraintlayout.widget.ConstraintLayout>
