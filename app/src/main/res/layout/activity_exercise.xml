@@ -6,16 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ExerciseActivity">
 
-    <ImageView
-        android:id="@+id/instruction_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/exerInstruction1"
-        app:srcCompat="@drawable/instruction" />
-
     <Button
         android:id="@+id/start_exercise_button"
         android:layout_width="wrap_content"
@@ -23,7 +13,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginBottom="32dp"
         android:backgroundTint="@color/button_color"
-        android:onClick="startExercise"
+        android:onClick="startButtonOnClick"
         android:text="@string/start_exercise_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"
-        android:text="Earn COINS by pressing\nGREEN images and\navoiding RED images"
+        android:text="Earn coins by pressing\nhealthy food and\navoiding unhealthy food"
         android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -112,14 +102,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Careful!\nLose COINS by pressing\nRED images and missing\nGREEN images"
+        android:text="Careful!\nLose coins by pressing\nunhealthy food and missing\nhealthy food"
         android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/instruction_image" />
+        app:layout_constraintTop_toBottomOf="@+id/exeInstrImage1" />
 
     <Spinner
         android:id="@+id/select_level_spinner"
@@ -130,4 +120,25 @@
         app:layout_constraintEnd_toEndOf="@+id/exercise_xp_text"
         app:layout_constraintStart_toStartOf="@+id/exercise_xp_text"
         app:layout_constraintTop_toBottomOf="@+id/exercise_xp_text" />
+
+    <ImageView
+        android:id="@+id/exeInstrImage1"
+        android:layout_width="133dp"
+        android:layout_height="121dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/exerInstruction1"
+        app:srcCompat="@drawable/healthy_apple" />
+
+    <ImageView
+        android:id="@+id/exeInstrImage2"
+        android:layout_width="129dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/exeInstrImage1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/exerInstruction1"
+        app:srcCompat="@drawable/unhealthy_burger" />
 </androidx.constraintlayout.widget.ConstraintLayout>

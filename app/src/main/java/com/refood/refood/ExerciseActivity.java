@@ -75,7 +75,8 @@ public class ExerciseActivity extends AppCompatActivity {
     private Button mStartButton;
     private TextView mExeInstr1;
     private TextView mExeInstr2;
-    private ImageView mExeInstrImg;
+    private ImageView mExeInstrImg1;
+    private ImageView mExeInstrImg2;
     private ImageView mCue;
     private TextView mFeedback;
     private TextView mXpText;
@@ -133,6 +134,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private MediaPlayer mCoinMissedSound;
     private MediaPlayer mExplosionSound;
     private boolean mSoundEnabled;
+    private boolean mIsInstrShown;
 
     // The following are used for the shake detection
     private SensorManager mSensorManager;
@@ -162,7 +164,8 @@ public class ExerciseActivity extends AppCompatActivity {
         mStartButton = findViewById(R.id.start_exercise_button);
         mExeInstr1 = findViewById(R.id.exerInstruction1);
         mExeInstr2 = findViewById(R.id.exerInstruction2);
-        mExeInstrImg = findViewById(R.id.instruction_image);
+        mExeInstrImg1 = findViewById(R.id.exeInstrImage1);
+        mExeInstrImg2 = findViewById(R.id.exeInstrImage2);
         mFeedback = findViewById(R.id.feedback_text);
 
         mXpText = findViewById(R.id.exercise_xp_text);
@@ -316,32 +319,142 @@ public class ExerciseActivity extends AppCompatActivity {
                 });
     }
 
+    public void startButtonOnClick(View view) {
+        Toast.makeText(this, "Start button clicked", Toast.LENGTH_LONG);
+        mRound = mRound%NUM_ROUND + 1;
+        Log.d(LOG_TAG, "start button clicked, current round: "+mRound+", level "+mLevel);
+        mAppearTime = DEFAULT_APPEAR_TIME;
+        switch (mLevel)
+        {
+            case 1:
+                mNumCoinCues = 0;
+                mNumBombCues = 0;
+                mNumBellCues = 0;
+                if (mRound == 2) {
+                    if (mIsInstrShown) {
+                        mIsInstrShown = false;
+                        startExercise(view);
+                    } else {
+                        //TODO display moving instruction
+                        mRound = 1;
+                        mExeInstr1.setText("Beware that images are\ngoing to fall down");
+                        mExeInstrImg1.setImageResource(R.drawable.healthy_apple);
+                        mExeInstrImg2.setImageResource(R.drawable.unhealthy_burger);
+                        mExeInstr2.setText("Click on them before\nthey reach the bottom");
+                        mExeInstr1.setVisibility(view.VISIBLE);
+                        mExeInstr2.setVisibility(view.VISIBLE);
+                        mExeInstrImg1.setVisibility(view.VISIBLE);
+                        mExeInstrImg2.setVisibility(view.VISIBLE);
+                        mIsInstrShown = true;
+                    }
+                }else {
+                    startExercise(view);
+                }
+                break;
+            case 2:
+                if (mRound == 2) {
+                    if (mIsInstrShown) {
+                        mIsInstrShown = false;
+                        startExercise(view);
+                    } else {
+                        //TODO display faster falling instruction
+                        mRound = 1;
+                        mExeInstr1.setText("Beware that images are\ngoing to fall FASTER");
+                        mExeInstrImg1.setImageResource(R.drawable.healthy_apple);
+                        mExeInstrImg2.setImageResource(R.drawable.unhealthy_burger);
+                        mExeInstr2.setText("Click on them before\nthey reach the bottom");
+                        mExeInstr1.setVisibility(view.VISIBLE);
+                        mExeInstr2.setVisibility(view.VISIBLE);
+                        mExeInstrImg1.setVisibility(view.VISIBLE);
+                        mExeInstrImg2.setVisibility(view.VISIBLE);
+                        mIsInstrShown = true;
+                    }
+                }else {
+                    startExercise(view);
+                }
+                break;
+            case 3:
+                mNumCoinCues = DEFAULT_SPECIAL_CUE_NUM;
+                mNumBombCues = DEFAULT_SPECIAL_CUE_NUM;
+                mNumBellCues = 0;
+                if (mRound == 1) {
+                    if (mIsInstrShown) {
+                        mIsInstrShown = false;
+                        startExercise(view);
+                    } else {
+                        //TODO display coin and bomb instruction
+                        mRound = 2;
+                        mExeInstr1.setText("Bombs and coins are\nadded to this level");
+                        mExeInstrImg1.setImageResource(R.drawable.bomb);
+                        mExeInstrImg2.setImageResource(R.drawable.coin);
+                        mExeInstr2.setText("Clink on coins and\navoid bombs");
+                        mExeInstr1.setVisibility(view.VISIBLE);
+                        mExeInstr2.setVisibility(view.VISIBLE);
+                        mExeInstrImg1.setVisibility(view.VISIBLE);
+                        mExeInstrImg2.setVisibility(view.VISIBLE);
+                        mIsInstrShown = true;
+                    }
+                }else {
+                    startExercise(view);
+                }
+                break;
+            case 4:
+                if (mRound == 2) {
+                    if (mIsInstrShown) {
+                        mIsInstrShown = false;
+                        startExercise(view);
+                    } else {
+                        //TODO display horrizontal instruction
+                        mRound = 1;
+                        mExeInstr1.setText("Beware that these cues\nwill move HORIZONTALLY");
+                        mExeInstrImg1.setImageResource(R.drawable.bomb);
+                        mExeInstrImg2.setImageResource(R.drawable.coin);
+                        mExeInstr2.setText("Click on them before\nthey reach the edge");
+                        mExeInstr1.setVisibility(view.VISIBLE);
+                        mExeInstr2.setVisibility(view.VISIBLE);
+                        mExeInstrImg1.setVisibility(view.VISIBLE);
+                        mExeInstrImg2.setVisibility(view.VISIBLE);
+                        mIsInstrShown = true;
+                    }
+                }else {
+                    startExercise(view);
+                }
+                break;
+            case 5:
+                mNumCoinCues = DEFAULT_SPECIAL_CUE_NUM;
+                mNumBombCues = DEFAULT_SPECIAL_CUE_NUM;
+                mNumBellCues = DEFAULT_SPECIAL_CUE_NUM;
+                Log.d(LOG_TAG, "Got to level 5, round "+mRound);
+                if (mRound == 1) {
+                    if (mIsInstrShown) {
+                        mIsInstrShown = false;
+                        startExercise(view);
+                    } else {
+                        //TODO display bell instruction
+                        mRound = 2;
+                        Log.d(LOG_TAG, "Got to level 5 instruction");
+                        mExeInstr1.setText("Bell cue is added");
+                        mExeInstrImg1.setImageResource(R.drawable.bell);
+                        mExeInstrImg2.setImageResource(R.drawable.shake_phone);
+                        mExeInstr2.setText("When it shows up\nshake your phone to\nearn coins");
+                        mExeInstr1.setVisibility(view.VISIBLE);
+                        mExeInstr2.setVisibility(view.VISIBLE);
+                        mExeInstrImg1.setVisibility(view.VISIBLE);
+                        mExeInstrImg2.setVisibility(view.VISIBLE);
+                        mIsInstrShown = true;
+                    }
+                } else {
+                    startExercise(view);
+                }
+                break;
+        }
+
+    }
+
     public void startExercise(View view) {
         mGameProgress = 1;
-        mRound = mRound%NUM_ROUND + 1;
         if (mRound <= NUM_ROUND)
         {
-            mAppearTime = DEFAULT_APPEAR_TIME;
-            switch (mLevel)
-            {
-                case 1:
-                case 2:
-                    mNumCoinCues = 0;
-                    mNumBombCues = 0;
-                    mNumBellCues = 0;
-                    break;
-                case 3:
-                case 4:
-                    mNumCoinCues = DEFAULT_SPECIAL_CUE_NUM;
-                    mNumBombCues = DEFAULT_SPECIAL_CUE_NUM;
-                    mNumBellCues = 0;
-                    break;
-                case 5:
-                    mNumCoinCues = DEFAULT_SPECIAL_CUE_NUM;
-                    mNumBombCues = DEFAULT_SPECIAL_CUE_NUM;
-                    mNumBellCues = DEFAULT_SPECIAL_CUE_NUM;
-                    break;
-            }
             mNumHealthyFoodCues = (ROUND_DURATION - mNumCoinCues - mNumBombCues - mNumBellCues)/2;
             mNumUnhealthyFoodCues = mNumHealthyFoodCues;
             if (!mStartButton.getText().equals(getString(R.string.round_transition_text)))
@@ -349,7 +462,8 @@ public class ExerciseActivity extends AppCompatActivity {
                 BackgroundMusic.getInstance(getApplicationContext()).switchBGM();
             }
             mStartButton.setVisibility(View.GONE);
-            mExeInstrImg.setVisibility(View.GONE);
+            mExeInstrImg1.setVisibility(View.GONE);
+            mExeInstrImg2.setVisibility(View.GONE);
             mExeInstr1.setVisibility(View.GONE);
             mExeInstr2.setVisibility(View.GONE);
             View parent = (View)mStartButton.getParent();
