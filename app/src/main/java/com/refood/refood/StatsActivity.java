@@ -103,7 +103,8 @@ public class StatsActivity extends AppCompatActivity{
                             ArrayList<Long> scoreList = (ArrayList<Long>) (userStore.get("scoreHistory"));
                             ArrayList<String> dateList = (ArrayList<String>) userStore.get("exerciseHistory");
                             ArrayList<Entry> entryList = new ArrayList<>();
-                            for (int i=dateList.size()-5; i<dateList.size(); i++) {
+                            int start = Math.max(0, dateList.size()-5);
+                            for (int i=start; i<dateList.size(); i++) {
                                 String date = dateList.get(i);
                                 Log.d(LOG_TAG, "Timestamp data: " + date);
 //                                xLabel.add(date);

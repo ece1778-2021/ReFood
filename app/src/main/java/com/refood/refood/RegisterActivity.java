@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -109,7 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 // Create a new user with a first and last name
                                 Map<String, Object> userStore = new HashMap<>();
                                 userStore.put("username", username);
-                                userStore.put("numCoins", 0);
+                                userStore.put("numCoins", 20);
                                 userStore.put("scoreHistory", Collections.emptyList());
                                 userStore.put("exerciseHistory", Collections.emptyList());
                                 userStore.put("notificationEnabled", false);
@@ -117,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 userStore.put("notificationMinute", 0);
                                 userStore.put("zemPath", "/zems/zem1.png");
 
-                                List<String> zemList = Collections.emptyList();
+                                List<String> zemList = new ArrayList<>();
                                 zemList.add("/zems/zem1.png");
                                 userStore.put("ownedZems", zemList);
 
